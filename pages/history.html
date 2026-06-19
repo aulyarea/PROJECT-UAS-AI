@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Riwayat Konsultasi – GlowGuide</title>
+  <meta name="description" content="Lihat riwayat konsultasi skincare dan perkembangan rekomendasi kulitmu di GlowGuide." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/main.css" />
+  <link rel="stylesheet" href="../css/pages.css" />
+</head>
+<body class="history-body">
+
+  <nav class="navbar scrolled" id="navbar">
+    <div class="nav-container">
+      <a href="../index.html" class="logo"><span class="logo-icon">✦</span><span class="logo-text">GlowGuide</span></a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="../index.html" class="nav-link">Home</a></li>
+        <li><a href="consultation.html" class="nav-link">Konsultasi</a></li>
+        <li><a href="history.html" class="nav-link active">Riwayat</a></li>
+      </ul>
+      <div class="nav-actions" id="navActions">
+        <a href="login.html" class="btn-outline" id="btnLogin">Masuk</a>
+        <a href="register.html" class="btn-primary" id="btnRegister">Daftar</a>
+      </div>
+      <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+    </div>
+  </nav>
+
+  <div class="history-container">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:32px;flex-wrap:wrap;gap:16px">
+      <div>
+        <div class="section-badge" style="display:inline-block;margin-bottom:8px">📋 Riwayat</div>
+        <h1 style="font-family:var(--font-display);font-size:clamp(22px,3vw,32px);font-weight:700;color:var(--text-dark)">Riwayat Konsultasi</h1>
+        <p style="color:var(--text-muted);font-size:14px;margin-top:4px">Pantau perkembangan perjalanan skincarem-u</p>
+      </div>
+      <div style="display:flex;gap:10px">
+        <button class="btn btn-ghost" id="btnClearHistory">🗑️ Hapus Riwayat</button>
+        <a href="consultation.html" class="btn btn-pink">💬 Konsultasi Baru</a>
+      </div>
+    </div>
+
+    <!-- Filter tabs -->
+    <div style="display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap" id="historyFilters">
+      <button class="cat-filter active" data-type="all">✨ Semua</button>
+      <button class="cat-filter" data-type="consultation">💬 Konsultasi</button>
+      <button class="cat-filter" data-type="quiz">🔍 Skin Quiz</button>
+    </div>
+
+    <!-- Empty State -->
+    <div id="emptyHistory" class="hidden">
+      <div class="history-empty">
+        <span class="history-empty-icon">📋</span>
+        <h3>Belum Ada Riwayat</h3>
+        <p>Mulai konsultasi atau ikuti Skin Quiz untuk menyimpan riwayat</p>
+        <div style="display:flex;gap:12px;justify-content:center;margin-top:24px;flex-wrap:wrap">
+          <a href="consultation.html" class="btn btn-pink">💬 Mulai Konsultasi</a>
+          <a href="quiz.html" class="btn btn-ghost">🔍 Ikuti Skin Quiz</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- History List -->
+    <div id="historyList"></div>
+
+    <!-- Detail Modal -->
+    <div class="modal-overlay hidden" id="historyModal">
+      <div class="modal">
+        <div class="modal-header">
+          <span class="modal-title">Detail Riwayat</span>
+          <button class="modal-close" id="histModalClose">✕</button>
+        </div>
+        <div id="histModalBody"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/main.js"></script>
+  <script src="../js/data.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      let activeFilter = 'all';
+
+      function formatDate(isoStr) {
+        const d = new Date(isoStr);
+        return d.toLocaleDateString('id-ID', { day:'numeric', month:'long', year:'numeric', hour:'2-digit', minute:'2-digit' });
+      }
+
+      function render() {
+        const all = History.get();
+        const filtered = activeFilter === 'all' ? all : all.filter(h => h.type === activeFilter);
+        const listEl = document.getElementById('historyList');
+        const emptyEl = document.getElementById('emptyHistory');
+
+        if (filtered.length === 0) {
+          emptyEl.classList.remove('hidden');
+          listEl.innerHTML = '';
+          return;
+        }
+        emptyEl.classList.add('hidden');
+
+        listEl.innerHTML = filtered.map(h => {
+          const skinResult = h.skinType ? GlowData.skinTypeResults[h.skinType] : null;
+          const isConsult = h.type === 'consultation';
+          const typeLabel = isConsult ? '💬 Konsultasi' : '🔍 Skin Quiz';
+          const tags = isConsult
+            ? [...(h.concerns || []).slice(0,3).map(c => c.replace(/-/g,' ')), h.age ? `Usia ${h.age}` : null, h.budget ? `Rp ${parseInt(h.budget).toLocaleString('id-ID')}` : null].filter(Boolean)
+            : ['Quiz', skinResult?.name || h.skinType];
+
+          return `
+            <div class="history-item" data-id="${h.id}">
+              <div class="history-item-header">
+                <div class="history-skin-type">
+                  <span class="history-type-icon">${h.emoji || (skinResult?.emoji || '📋')}</span>
+                  <div>
+                    <div class="history-type-label">${skinResult?.name || 'Hasil Analisis'}</div>
+                    <div style="font-size:12px;color:var(--pink-deep);font-weight:600">${typeLabel}</div>
+                  </div>
+                </div>
+                <span class="history-date">${formatDate(h.date)}</span>
+              </div>
+              <div class="history-tags">
+                ${tags.map(t => `<span class="history-tag">${t}</span>`).join('')}
+              </div>
+              <div style="margin-top:12px;font-size:13px;color:var(--text-muted)">
+                Klik untuk melihat detail → 
+              </div>
+            </div>`;
+        }).join('');
+
+        document.querySelectorAll('.history-item').forEach(item => {
+          item.addEventListener('click', () => openDetail(parseInt(item.dataset.id)));
+        });
+      }
+
+      function openDetail(id) {
+        const h = History.get().find(h => h.id === id);
+        if (!h) return;
+        const skinResult = h.skinType ? GlowData.skinTypeResults[h.skinType] : null;
+
+        let body = `
+          <div style="text-align:center;margin-bottom:20px">
+            <div style="font-size:52px;margin-bottom:8px">${h.emoji || skinResult?.emoji || '📋'}</div>
+            <div style="font-family:var(--font-display);font-size:20px;font-weight:700;color:var(--text-dark);margin-bottom:4px">${skinResult?.name || 'Hasil Analisis'}</div>
+            <div style="font-size:12px;color:var(--text-muted)">${new Date(h.date).toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'})}</div>
+          </div>`;
+
+        if (h.type === 'consultation') {
+          const rule = GlowData.rules.find(r => r.conditions.skinType === h.skinType);
+          body += `
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+              <div style="background:var(--cream);border-radius:var(--radius-md);padding:14px">
+                <div style="font-size:11px;font-weight:700;color:var(--text-muted);margin-bottom:4px">SENSITIVITAS</div>
+                <div style="font-weight:700;color:var(--text-dark)">${h.sensitivity || '-'}</div>
+              </div>
+              <div style="background:var(--cream);border-radius:var(--radius-md);padding:14px">
+                <div style="font-size:11px;font-weight:700;color:var(--text-muted);margin-bottom:4px">USIA</div>
+                <div style="font-weight:700;color:var(--text-dark)">${h.age || '-'}</div>
+              </div>
+              <div style="background:var(--cream);border-radius:var(--radius-md);padding:14px">
+                <div style="font-size:11px;font-weight:700;color:var(--text-muted);margin-bottom:4px">BUDGET</div>
+                <div style="font-weight:700;color:var(--rose)">${h.budget ? 'Rp '+parseInt(h.budget).toLocaleString('id-ID') : '-'}</div>
+              </div>
+              <div style="background:var(--cream);border-radius:var(--radius-md);padding:14px">
+                <div style="font-size:11px;font-weight:700;color:var(--text-muted);margin-bottom:4px">RUTINITAS</div>
+                <div style="font-weight:700;color:var(--text-dark)">${h.routineKey?.replace(/-/g,' ') || '-'}</div>
+              </div>
+            </div>`;
+          if (h.concerns?.length) {
+            body += `<div style="margin-bottom:16px"><div style="font-size:13px;font-weight:700;color:var(--text-dark);margin-bottom:8px">⚠️ Keluhan:</div><div style="display:flex;flex-wrap:wrap;gap:6px">${h.concerns.map(c=>`<span class="concern-tag">${c.replace(/-/g,' ')}</span>`).join('')}</div></div>`;
+          }
+          if (rule?.output?.ingredients) {
+            body += `<div style="margin-bottom:16px"><div style="font-size:13px;font-weight:700;color:var(--text-dark);margin-bottom:8px">🔬 Bahan Direkomendasikan:</div><div style="display:flex;flex-wrap:wrap;gap:6px">${rule.output.ingredients.map(i=>`<span style="padding:5px 12px;background:var(--cream-dark);border-radius:99px;font-size:12px;font-weight:600;color:var(--text-mid)">${i.replace(/-/g,' ')}</span>`).join('')}</div></div>`;
+          }
+
+          const routine = GlowData.routines[h.routineKey] || GlowData.routines['normal-basic'];
+          if (routine) {
+            const recommendedIds = new Set();
+            [...routine.morning, ...routine.night].forEach(step => step.productIds.forEach(id => recommendedIds.add(id)));
+            const filteredProducts = GlowData.products.filter(p =>
+              recommendedIds.has(p.id) &&
+              p.skinTypes.includes(h.skinType) &&
+              (!h.budget || p.price <= h.budget)
+            ).slice(0, 4);
+
+            if (filteredProducts.length > 0) {
+              body += `<div style="margin-bottom:16px"><div style="font-size:13px;font-weight:700;color:var(--text-dark);margin-bottom:8px">🛍️ Produk Rekomendasi:</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">`;
+              filteredProducts.forEach(p => {
+                body += `<div style="display:flex;align-items:center;gap:10px;padding:8px;background:var(--white);border:1px solid rgba(247,200,211,.4);border-radius:var(--radius-md)"><div style="font-size:24px">${p.emoji}</div><div><div style="font-size:12px;font-weight:700;color:var(--text-dark);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:120px">${p.name}</div><div style="font-size:11px;color:var(--rose)">Rp ${p.price.toLocaleString('id-ID')}</div></div></div>`;
+              });
+              body += `</div></div>`;
+            }
+          }
+        } else {
+          // Quiz result
+          body += `<div style="margin-bottom:16px"><div style="font-size:13px;font-weight:700;color:var(--text-dark);margin-bottom:8px">📋 Deskripsi:</div><p style="font-size:14px;color:var(--text-muted);line-height:1.7">${skinResult?.description || ''}</p></div>`;
+          if (skinResult?.traits) {
+            body += `<div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px">${skinResult.traits.map(t=>`<span class="trait-tag">${t}</span>`).join('')}</div>`;
+          }
+
+          const rKey = skinResult?.routineKey || 'normal-basic';
+          const routine = GlowData.routines[rKey];
+          if (routine) {
+            const recommendedIds = new Set();
+            [...routine.morning, ...routine.night].forEach(step => step.productIds.forEach(id => recommendedIds.add(id)));
+            const filteredProducts = GlowData.products.filter(p =>
+              recommendedIds.has(p.id) &&
+              p.skinTypes.includes(h.skinType)
+            ).slice(0, 4);
+
+            if (filteredProducts.length > 0) {
+              body += `<div style="margin-bottom:16px"><div style="font-size:13px;font-weight:700;color:var(--text-dark);margin-bottom:8px">🛍️ Rekomendasi Produk Dasar:</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">`;
+              filteredProducts.forEach(p => {
+                body += `<div style="display:flex;align-items:center;gap:10px;padding:8px;background:var(--white);border:1px solid rgba(247,200,211,.4);border-radius:var(--radius-md)"><div style="font-size:24px">${p.emoji}</div><div><div style="font-size:12px;font-weight:700;color:var(--text-dark);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:120px">${p.name}</div><div style="font-size:11px;color:var(--rose)">Rp ${p.price.toLocaleString('id-ID')}</div></div></div>`;
+              });
+              body += `</div></div>`;
+            }
+          }
+        }
+
+        body += `
+          <div style="display:flex;gap:10px;flex-wrap:wrap">
+            <a href="consultation.html?skinType=${h.skinType}" class="btn btn-pink" style="flex:1;justify-content:center">💬 Konsultasi Lagi</a>
+            <a href="routine.html?key=${h.routineKey||''}" class="btn btn-ghost" style="flex:1;justify-content:center">🌅 Rutinitas</a>
+          </div>`;
+
+        document.getElementById('histModalBody').innerHTML = body;
+        document.getElementById('historyModal').classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+      }
+
+      document.getElementById('histModalClose').addEventListener('click', () => {
+        document.getElementById('historyModal').classList.add('hidden');
+        document.body.style.overflow = '';
+      });
+      document.getElementById('historyModal').addEventListener('click', e => {
+        if (e.target === document.getElementById('historyModal')) {
+          document.getElementById('historyModal').classList.add('hidden');
+          document.body.style.overflow = '';
+        }
+      });
+
+      document.querySelectorAll('#historyFilters .cat-filter').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('#historyFilters .cat-filter').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          activeFilter = btn.dataset.type;
+          render();
+        });
+      });
+
+      document.getElementById('btnClearHistory').addEventListener('click', () => {
+        if (confirm('Hapus semua riwayat konsultasi?')) {
+          History.clear();
+          Toast.info('Riwayat dikosongkan');
+          render();
+        }
+      });
+
+      render();
+    });
+  </script>
+</body>
+</html>

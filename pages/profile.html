@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Profil Saya – GlowGuide</title>
+  <meta name="description" content="Kelola profil, riwayat, dan wishlist GlowGuide Anda di sini." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/main.css" />
+  <link rel="stylesheet" href="../css/pages.css" />
+  <style>
+    .profile-layout { display: grid; grid-template-columns: 280px 1fr; gap: 32px; max-width: 1000px; margin: 0 auto; padding-top: 40px; }
+    @media (max-width: 768px) { .profile-layout { grid-template-columns: 1fr; } }
+    .profile-sidebar { background: var(--white); border-radius: var(--radius-xl); padding: 24px; box-shadow: var(--shadow-sm); border: 1px solid rgba(247,200,211,.3); }
+    .profile-avatar-wrap { text-align: center; margin-bottom: 24px; }
+    .profile-avatar { width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, var(--pink-soft), var(--pink-deep)); display: inline-flex; align-items: center; justify-content: center; font-size: 36px; margin-bottom: 12px; }
+    .profile-name { font-family: var(--font-display); font-size: 20px; font-weight: 700; color: var(--text-dark); margin-bottom: 4px; }
+    .profile-email { font-size: 13px; color: var(--text-muted); }
+    
+    .profile-nav { display: flex; flex-direction: column; gap: 8px; }
+    .profile-nav-item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: var(--radius-md); font-weight: 600; font-size: 14px; color: var(--text-mid); cursor: pointer; transition: var(--transition); text-decoration: none; border: 1px solid transparent; }
+    .profile-nav-item:hover { background: var(--cream); color: var(--pink-deep); }
+    .profile-nav-item.active { background: var(--blush); color: var(--rose); border-color: rgba(247,200,211,.5); }
+    .profile-nav-icon { font-size: 18px; }
+
+    .profile-content { background: var(--white); border-radius: var(--radius-xl); padding: 32px; box-shadow: var(--shadow-sm); border: 1px solid rgba(247,200,211,.3); }
+    .profile-content h2 { font-family: var(--font-display); font-size: 24px; font-weight: 700; color: var(--text-dark); margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid rgba(247,200,211,.2); }
+  </style>
+</head>
+<body class="history-body">
+
+  <nav class="navbar scrolled" id="navbar">
+    <div class="nav-container">
+      <a href="../index.html" class="logo"><span class="logo-icon">✦</span><span class="logo-text">GlowGuide</span></a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="../index.html" class="nav-link">Home</a></li>
+        <li><a href="catalog.html" class="nav-link">Produk</a></li>
+        <li><a href="consultation.html" class="nav-link">Konsultasi</a></li>
+      </ul>
+      <div class="nav-actions" id="navActions">
+        <a href="login.html" class="btn-outline" id="btnLogin">Masuk</a>
+        <a href="register.html" class="btn-primary" id="btnRegister">Daftar</a>
+      </div>
+      <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+    </div>
+  </nav>
+
+  <div class="container" style="padding-top: 100px; padding-bottom: 80px;">
+    
+    <div class="profile-layout">
+      <!-- Sidebar -->
+      <aside class="profile-sidebar">
+        <div class="profile-avatar-wrap">
+          <div class="profile-avatar" id="dispAvatar">🌸</div>
+          <div class="profile-name" id="dispName">Nama Pengguna</div>
+          <div class="profile-email" id="dispEmail">email@contoh.com</div>
+          <div style="margin-top:8px"><span class="badge badge-pink" id="dispSkinType">Belum Set Kulit</span></div>
+        </div>
+
+        <nav class="profile-nav">
+          <a href="profile.html" class="profile-nav-item active"><span class="profile-nav-icon">👤</span> Profil Saya</a>
+          <a href="history.html" class="profile-nav-item"><span class="profile-nav-icon">📋</span> Riwayat Konsultasi</a>
+          <a href="wishlist.html" class="profile-nav-item"><span class="profile-nav-icon">💝</span> Wishlist Produk</a>
+          <hr style="border:none; border-top:1px solid rgba(247,200,211,.3); margin: 8px 0;" />
+          <button class="profile-nav-item" id="btnLogoutSidebar" style="background:none; text-align:left; width:100%;"><span class="profile-nav-icon">🚪</span> Keluar Akun</button>
+        </nav>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="profile-content">
+        <h2>Informasi Pribadi</h2>
+        
+        <form id="profileForm">
+          <div class="form-group">
+            <label class="form-label" for="profName">Nama Lengkap</label>
+            <input type="text" id="profName" class="form-input" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="profEmail">Alamat Email</label>
+            <input type="email" id="profEmail" class="form-input" required disabled title="Email tidak dapat diubah" style="background:var(--cream); cursor:not-allowed;" />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="profSkin">Jenis Kulit</label>
+            <select id="profSkin" class="form-select">
+              <option value="">Belum diatur (Ikuti kuis terlebih dahulu)</option>
+              <option value="berminyak">💧 Kulit Berminyak</option>
+              <option value="kering">🌵 Kulit Kering</option>
+              <option value="kombinasi">⚖️ Kulit Kombinasi</option>
+              <option value="sensitif">🌸 Kulit Sensitif</option>
+              <option value="normal">✨ Kulit Normal</option>
+            </select>
+          </div>
+          
+          <div style="margin-top: 32px;">
+            <button type="submit" class="btn btn-pink">Simpan Perubahan</button>
+          </div>
+        </form>
+
+        <div style="background:#FEECEC; border-radius:var(--radius-md); padding:20px; margin-top:40px; border:1px solid #F5A8A8;">
+          <h3 style="font-size:16px; font-weight:700; color:var(--error); margin-bottom:8px;">Zona Bahaya</h3>
+          <p style="font-size:13px; color:var(--text-muted); margin-bottom:16px;">Menghapus akun akan menghapus semua riwayat dan wishlist Anda secara permanen. Tindakan ini tidak dapat dibatalkan.</p>
+          <button class="btn btn-outline" style="border-color:var(--error); color:var(--error);" id="btnDeleteAccount">Hapus Akun Saya</button>
+        </div>
+      </main>
+    </div>
+
+  </div>
+
+  <script src="../js/main.js"></script>
+  <script src="../js/data.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      if (!Auth.isLoggedIn()) {
+        window.location.href = 'login.html';
+        return;
+      }
+
+      const currentUser = Auth.getUser();
+      
+      // Init display
+      const skinEmojis = { berminyak:'💧', kering:'🌵', kombinasi:'⚖️', sensitif:'🌸', normal:'✨' };
+      document.getElementById('dispAvatar').textContent = currentUser.avatar || '🌸';
+      document.getElementById('dispName').textContent = currentUser.name;
+      document.getElementById('dispEmail').textContent = currentUser.email;
+      document.getElementById('dispSkinType').textContent = currentUser.skinType 
+        ? `${skinEmojis[currentUser.skinType]} Kulit ${currentUser.skinType.charAt(0).toUpperCase() + currentUser.skinType.slice(1)}` 
+        : 'Belum Set Kulit';
+
+      // Init form
+      document.getElementById('profName').value = currentUser.name;
+      document.getElementById('profEmail').value = currentUser.email;
+      document.getElementById('profSkin').value = currentUser.skinType || '';
+
+      // Save form
+      document.getElementById('profileForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const newName = document.getElementById('profName').value.trim();
+        const newSkin = document.getElementById('profSkin').value;
+
+        if (newName.length < 2) {
+          Toast.error('Nama minimal 2 karakter');
+          return;
+        }
+
+        // Update local session
+        currentUser.name = newName;
+        currentUser.skinType = newSkin || null;
+        Auth.setUser(currentUser);
+
+        // Update DB
+        const users = JSON.parse(localStorage.getItem('gg_users') || '[]');
+        const index = users.findIndex(u => u.email === currentUser.email);
+        if (index > -1) {
+          users[index] = currentUser;
+          localStorage.setItem('gg_users', JSON.stringify(users));
+        }
+
+        // Update display
+        document.getElementById('dispName').textContent = currentUser.name;
+        document.getElementById('dispSkinType').textContent = currentUser.skinType 
+          ? `${skinEmojis[currentUser.skinType]} Kulit ${currentUser.skinType.charAt(0).toUpperCase() + currentUser.skinType.slice(1)}` 
+          : 'Belum Set Kulit';
+        
+        Toast.success('Profil berhasil diperbarui! 💾');
+        updateNavAuth(); // Refresh navbar name
+      });
+
+      // Actions
+      document.getElementById('btnLogoutSidebar').addEventListener('click', () => {
+        Auth.logout();
+      });
+
+      document.getElementById('btnDeleteAccount').addEventListener('click', () => {
+        if (confirm('Apakah Anda yakin ingin menghapus akun? Semua data (riwayat, wishlist) akan hilang permanen.')) {
+          const users = JSON.parse(localStorage.getItem('gg_users') || '[]');
+          const newUsers = users.filter(u => u.email !== currentUser.email);
+          localStorage.setItem('gg_users', JSON.stringify(newUsers));
+          
+          History.clear();
+          localStorage.removeItem('gg_wishlist');
+          Auth.logout();
+        }
+      });
+    });
+  </script>
+</body>
+</html>

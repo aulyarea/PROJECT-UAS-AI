@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rutinitas Skincare – GlowGuide</title>
+  <meta name="description" content="Dapatkan rutinitas skincare pagi dan malam yang dipersonalisasi untuk kulitmu di GlowGuide." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/main.css" />
+  <link rel="stylesheet" href="../css/pages.css" />
+  <style>
+    .routine-header-card {
+      background: linear-gradient(135deg, var(--pink-deep), var(--rose));
+      border-radius: var(--radius-xl);
+      padding: 32px;
+      color: var(--white);
+      margin-bottom: 32px;
+      position: relative;
+      overflow: hidden;
+    }
+    .routine-header-card::after {
+      content: '🌸';
+      position: absolute;
+      right: 24px; top: 50%;
+      transform: translateY(-50%);
+      font-size: 80px;
+      opacity: 0.2;
+    }
+    .routine-header-card h2 { font-family: var(--font-display); font-size: 26px; font-weight: 700; margin-bottom: 8px; }
+    .routine-header-card p { opacity: 0.85; font-size: 14px; }
+    .routine-selector { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 24px; }
+    .routine-selector-btn {
+      padding: 9px 20px;
+      border-radius: var(--radius-full);
+      border: 2px solid rgba(247,200,211,0.5);
+      background: var(--white);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-mid);
+      cursor: pointer;
+      transition: var(--transition-bounce);
+    }
+    .routine-selector-btn:hover { border-color: var(--pink-mid); color: var(--pink-deep); }
+    .routine-selector-btn.active {
+      background: linear-gradient(135deg, var(--pink-deep), var(--rose));
+      border-color: transparent;
+      color: var(--white);
+      box-shadow: 0 4px 14px rgba(212,80,122,0.3);
+    }
+    .time-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 20px;
+      background: linear-gradient(135deg, var(--cream-dark), var(--cream));
+      border-radius: var(--radius-full);
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-dark);
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body class="routine-body">
+
+  <nav class="navbar scrolled" id="navbar">
+    <div class="nav-container">
+      <a href="../index.html" class="logo"><span class="logo-icon">✦</span><span class="logo-text">GlowGuide</span></a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="../index.html" class="nav-link">Home</a></li>
+        <li><a href="catalog.html" class="nav-link">Produk</a></li>
+        <li><a href="quiz.html" class="nav-link">Skin Quiz</a></li>
+        <li><a href="routine.html" class="nav-link active">Rutinitas</a></li>
+      </ul>
+      <div class="nav-actions" id="navActions">
+        <a href="login.html" class="btn-outline" id="btnLogin">Masuk</a>
+        <a href="register.html" class="btn-primary" id="btnRegister">Daftar</a>
+      </div>
+      <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+    </div>
+  </nav>
+
+  <div class="routine-container">
+    <div style="text-align:center;margin-bottom:32px">
+      <div class="section-badge">🌅 Skincare Routine</div>
+      <h1 style="font-family:var(--font-display);font-size:clamp(24px,4vw,36px);font-weight:700;color:var(--text-dark);margin:12px 0 8px">Rutinitas Skincaremu</h1>
+      <p style="color:var(--text-muted);font-size:15px">Urutan penggunaan produk yang tepat untuk hasil maksimal</p>
+    </div>
+
+    <!-- Routine Type Selector -->
+    <div style="margin-bottom:24px">
+      <div style="font-size:13px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:12px">Pilih Rutinitas:</div>
+      <div class="routine-selector" id="routineSelector">
+        <button class="routine-selector-btn active" data-key="oily-acne">💧 Kulit Berminyak</button>
+        <button class="routine-selector-btn" data-key="dry-sensitive">🌵 Kulit Kering/Sensitif</button>
+        <button class="routine-selector-btn" data-key="brightening">✨ Pencerah</button>
+        <button class="routine-selector-btn" data-key="normal-basic">🌿 Kulit Normal</button>
+        <button class="routine-selector-btn" data-key="antiaging">🕰️ Anti-Aging</button>
+      </div>
+    </div>
+
+    <!-- Routine Header Card -->
+    <div class="routine-header-card" id="routineHeaderCard">
+      <h2 id="routineTitle">Rutinitas Kulit Berminyak</h2>
+      <p id="routineDesc">Fokus pada kontrol minyak, pembersihan pori mendalam, dan pencegahan jerawat.</p>
+    </div>
+
+    <!-- Morning / Night Tabs -->
+    <div class="routine-tabs">
+      <button class="routine-tab active" id="tabMorning" onclick="switchTab('morning')">🌅 Pagi Hari</button>
+      <button class="routine-tab" id="tabNight" onclick="switchTab('night')">🌙 Malam Hari</button>
+    </div>
+
+    <!-- Morning Routine -->
+    <div class="routine-panel active" id="panelMorning">
+      <div class="time-badge">🌅 Morning Routine</div>
+      <div id="morningSteps"></div>
+    </div>
+
+    <!-- Night Routine -->
+    <div class="routine-panel" id="panelNight">
+      <div class="time-badge">🌙 Night Routine</div>
+      <div id="nightSteps"></div>
+    </div>
+
+    <!-- Tips Section -->
+    <div style="background:var(--white);border-radius:var(--radius-xl);padding:28px;margin-top:24px;border:1px solid rgba(247,200,211,0.3);box-shadow:var(--shadow-sm)">
+      <h3 style="font-family:var(--font-display);font-size:18px;font-weight:700;color:var(--text-dark);margin-bottom:16px">💡 Tips Penting</h3>
+      <div id="routineTips" style="display:flex;flex-direction:column;gap:10px"></div>
+    </div>
+
+    <div style="display:flex;gap:12px;justify-content:center;margin-top:32px;flex-wrap:wrap">
+      <a href="consultation.html" class="btn btn-pink">💬 Konsultasi Personal</a>
+      <a href="catalog.html" class="btn btn-ghost">🛍️ Lihat Semua Produk</a>
+    </div>
+  </div>
+
+  <script src="../js/main.js"></script>
+  <script src="../js/data.js"></script>
+  <script>
+    const routineInfo = {
+      'oily-acne':     { title: 'Rutinitas Kulit Berminyak & Jerawat',     desc: 'Fokus pada kontrol minyak, pembersihan pori mendalam, dan pencegahan jerawat aktif.', tips: ['Cuci muka max 2x sehari agar tidak over-strip', 'Gunakan toner BHA 2-3x seminggu, bukan setiap hari', 'Jangan pernah skip moisturizer meski kulit berminyak!', 'Gunakan sunscreen non-comedogenic setiap pagi', 'Clay mask seminggu sekali untuk deep cleansing pori'] },
+      'dry-sensitive':  { title: 'Rutinitas Kulit Kering & Sensitif',        desc: 'Prioritaskan barrier repair, hidrasi berlapis, dan bahan-bahan menenangkan yang gentle.', tips: ['Layer produk dari tekstur paling cair ke paling kental', 'Gunakan air hangat (tidak panas) saat cuci muka', 'Patch test produk baru di belakang telinga selama 3 hari', 'Pilih produk fragrance-free dan minimal ingredients', 'Pakai sleeping mask 2-3x seminggu untuk hidrasi ekstra'] },
+      'brightening':    { title: 'Rutinitas Pencerah Kulit',                 desc: 'Gabungkan eksfoliasi, antioksidan, dan perlindungan UV untuk kulit cerah merata.', tips: ['WAJIB pakai SPF50 setiap hari saat gunakan Vitamin C', 'AHA/BHA hanya malam hari, mulai 2-3x seminggu', 'Vitamin C paling efektif di pagi hari sebelum sunscreen', 'Hindari retinol + AHA di hari yang sama', 'Tunggu 10-15 menit antara penggunaan Vitamin C dan serum lain'] },
+      'normal-basic':   { title: 'Rutinitas Dasar Kulit Normal',             desc: 'Maintenance harian dengan perlindungan, hidrasi, dan antioksidan untuk kulit seimbang.', tips: ['Konsistensi lebih penting dari banyaknya produk', 'Vitamin C setiap pagi + SPF adalah duo terbaik', 'Mulai retinol sekarang untuk anti-aging preventif', 'Eksfoliasi ringan 1-2x seminggu untuk glow alami', 'Jangan berhemat pada sunscreen!'] },
+      'antiaging':      { title: 'Rutinitas Anti-Penuaan',                   desc: 'Kombinasi retinol, peptide, dan antioksidan untuk meremajakan kulit dan memperlambat penuaan.', tips: ['Mulai retinol dengan 0.025%, naikkan bertahap setiap bulan', 'Retinol hanya malam hari, SPF50 wajib setiap pagi', '"Sandwich method": moisturizer → retinol → moisturizer', 'Hindari retinol + AHA/BHA di malam yang sama', 'Peptide dan retinol bekerja baik jika dipakai bergantian'] }
+    };
+
+    let activeRoutineKey = 'oily-acne';
+
+    const params = new URLSearchParams(window.location.search);
+    const keyFromUrl = params.get('key');
+    const keyFromSession = sessionStorage.getItem('gg_routine');
+    if (Auth.isLoggedIn()) {
+      const user = Auth.getUser();
+      if (user.skinType) {
+        const skinToKey = { berminyak: 'oily-acne', kering: 'dry-sensitive', kombinasi: 'brightening', sensitif: 'dry-sensitive', normal: 'normal-basic' };
+        activeRoutineKey = skinToKey[user.skinType] || 'normal-basic';
+      }
+    }
+    if (keyFromUrl && GlowData.routines[keyFromUrl]) activeRoutineKey = keyFromUrl;
+    if (keyFromSession && GlowData.routines[keyFromSession]) activeRoutineKey = keyFromSession;
+
+    function findProductForStep(step) {
+      for (let id of step.productIds) {
+        const p = GlowData.products.find(pr => pr.id === id);
+        if (p) return p;
+      }
+      return null;
+    }
+
+    function renderRoutine(key) {
+      const routine = GlowData.routines[key];
+      const info = routineInfo[key] || routineInfo['normal-basic'];
+      if (!routine) return;
+
+      document.getElementById('routineTitle').textContent = info.title;
+      document.getElementById('routineDesc').textContent = info.desc;
+
+      ['morning', 'night'].forEach(time => {
+        const steps = routine[time] || [];
+        const container = document.getElementById(time + 'Steps');
+        container.innerHTML = '';
+        steps.forEach(step => {
+          const product = findProductForStep(step);
+          const alternatives = step.productIds.map(id => GlowData.products.find(p => p.id === id)).filter(Boolean);
+          container.innerHTML += `
+            <div class="routine-step-card">
+              <div class="step-order">${step.step}</div>
+              <div class="step-emoji">${step.emoji}</div>
+              <div class="step-info">
+                <h4>${step.name}</h4>
+                <p>${step.desc}</p>
+                ${product ? `<div class="step-product-name">📦 ${product.name} (Rp ${product.price.toLocaleString('id-ID')})</div>` : ''}
+                ${alternatives.length > 1 ? `<div style="font-size:11px;color:var(--text-light);margin-top:4px">+${alternatives.length-1} alternatif produk</div>` : ''}
+              </div>
+              <button class="step-action" onclick="window.location.href='catalog.html?category=${step.name.toLowerCase().replace(/\s+/g,'-')}'">Lihat Produk</button>
+            </div>`;
+        });
+      });
+
+      // Tips
+      const tipsEl = document.getElementById('routineTips');
+      tipsEl.innerHTML = info.tips.map(tip => `
+        <div style="display:flex;align-items:flex-start;gap:10px;padding:12px;background:var(--cream);border-radius:var(--radius-md)">
+          <span style="font-size:16px;flex-shrink:0">✦</span>
+          <span style="font-size:13px;color:var(--text-mid)">${tip}</span>
+        </div>`).join('');
+
+      // Update active button
+      document.querySelectorAll('.routine-selector-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.key === key);
+      });
+    }
+
+    window.switchTab = function(tab) {
+      document.getElementById('panelMorning').classList.toggle('active', tab === 'morning');
+      document.getElementById('panelNight').classList.toggle('active', tab === 'night');
+      document.getElementById('tabMorning').classList.toggle('active', tab === 'morning');
+      document.getElementById('tabNight').classList.toggle('active', tab === 'night');
+    };
+
+    document.querySelectorAll('.routine-selector-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        activeRoutineKey = btn.dataset.key;
+        renderRoutine(activeRoutineKey);
+      });
+    });
+
+    renderRoutine(activeRoutineKey);
+  </script>
+</body>
+</html>

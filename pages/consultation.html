@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Konsultasi Kecantikan – GlowGuide</title>
+  <meta name="description" content="Konsultasikan kondisi kulitmu dengan Beauty Advisor Virtual GlowGuide dan dapatkan rekomendasi produk personal." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/main.css" />
+  <link rel="stylesheet" href="../css/pages.css" />
+</head>
+<body class="consultation-body">
+
+  <nav class="navbar scrolled" id="navbar">
+    <div class="nav-container">
+      <a href="../index.html" class="logo"><span class="logo-icon">✦</span><span class="logo-text">GlowGuide</span></a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="../index.html" class="nav-link">Home</a></li>
+        <li><a href="catalog.html" class="nav-link">Produk</a></li>
+        <li><a href="quiz.html" class="nav-link">Skin Quiz</a></li>
+      </ul>
+      <div class="nav-actions" id="navActions">
+        <a href="login.html" class="btn-outline" id="btnLogin">Masuk</a>
+        <a href="register.html" class="btn-primary" id="btnRegister">Daftar</a>
+      </div>
+      <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+    </div>
+  </nav>
+
+  <div class="consultation-container">
+    <div style="text-align:center;margin-bottom:36px">
+      <div class="section-badge">💬 Beauty Consultation</div>
+      <h1 style="font-family:var(--font-display);font-size:clamp(24px,4vw,36px);font-weight:700;color:var(--text-dark);margin:12px 0 8px">Konsultasi Skincare Personal</h1>
+      <p style="color:var(--text-muted);font-size:15px">Ceritakan kondisi kulitmu, kami akan bantu menemukan produk yang tepat</p>
+    </div>
+
+    <!-- Progress Bar -->
+    <div class="quiz-progress-wrap" id="consultProgress">
+      <div class="quiz-progress-info">
+        <span id="progressText">Langkah 1 dari 5</span>
+        <span id="progressPct">20%</span>
+      </div>
+      <div class="quiz-progress-bar">
+        <div class="quiz-progress-fill" id="progressFill" style="width:20%"></div>
+      </div>
+    </div>
+
+    <!-- Step 1: Skin Type -->
+    <div class="consult-step active" id="step1">
+      <div class="consult-step-header">
+        <div class="consult-step-number">1</div>
+        <div class="consult-step-title">Apa jenis kulitmu?</div>
+      </div>
+      <div class="option-grid" id="skinTypeOptions">
+        <div class="option-card" data-value="berminyak"><span class="option-card-emoji">💧</span><span class="option-card-label">Berminyak</span></div>
+        <div class="option-card" data-value="kering"><span class="option-card-emoji">🌵</span><span class="option-card-label">Kering</span></div>
+        <div class="option-card" data-value="kombinasi"><span class="option-card-emoji">⚖️</span><span class="option-card-label">Kombinasi</span></div>
+        <div class="option-card" data-value="sensitif"><span class="option-card-emoji">🌸</span><span class="option-card-label">Sensitif</span></div>
+        <div class="option-card" data-value="normal"><span class="option-card-emoji">✨</span><span class="option-card-label">Normal</span></div>
+      </div>
+      <div style="text-align:center;margin-bottom:16px">
+        <a href="quiz.html" style="font-size:13px;color:var(--pink-deep);font-weight:600">Belum tahu? Ikuti Skin Quiz →</a>
+      </div>
+      <div style="display:flex;justify-content:flex-end">
+        <button class="quiz-nav-next" id="step1Next" disabled>Lanjut →</button>
+      </div>
+    </div>
+
+    <!-- Step 2: Skin Sensitivity -->
+    <div class="consult-step" id="step2">
+      <div class="consult-step-header">
+        <div class="consult-step-number">2</div>
+        <div class="consult-step-title">Seberapa sensitif kulitmu?</div>
+      </div>
+      <div class="option-grid" id="sensitivityOptions">
+        <div class="option-card" data-value="rendah"><span class="option-card-emoji">🟢</span><span class="option-card-label">Rendah</span></div>
+        <div class="option-card" data-value="sedang"><span class="option-card-emoji">🟡</span><span class="option-card-label">Sedang</span></div>
+        <div class="option-card" data-value="tinggi"><span class="option-card-emoji">🔴</span><span class="option-card-label">Tinggi</span></div>
+      </div>
+      <div style="display:flex;justify-content:space-between">
+        <button class="quiz-nav-back" id="step2Back">← Kembali</button>
+        <button class="quiz-nav-next" id="step2Next" disabled>Lanjut →</button>
+      </div>
+    </div>
+
+    <!-- Step 3: Concerns -->
+    <div class="consult-step" id="step3">
+      <div class="consult-step-header">
+        <div class="consult-step-number">3</div>
+        <div class="consult-step-title">Apa keluhan utama kulitmu? (Pilih semua yang sesuai)</div>
+      </div>
+      <div class="checkbox-grid" id="concernsOptions">
+        <label class="checkbox-item" data-value="jerawat"><input type="checkbox" /><div class="custom-checkbox"></div><span class="checkbox-item-text">🔴 Jerawat</span></label>
+        <label class="checkbox-item" data-value="komedo"><input type="checkbox" /><div class="custom-checkbox"></div><span class="checkbox-item-text">⚫ Komedo</span></label>
+        <label class="checkbox-item" data-value="pori-besar"><input type="checkbox" /><div class="custom-checkbox"></div><span class="checkbox-item-text">🔍 Pori Besar</span></label>
+        <label class="checkbox-item" data-value="kulit-kering"><input type="checkbox" /><div class="custom-checkbox"></div><span class="checkbox-item-text">🏜️ Kulit Kering</span></label>
+        <label class="checkbox-item" data-value="kulit-sensitif"><input type="checkbox" /><div class="custom-checkbox"></div><span class="checkbox-item-text">🌸 Kulit Sensitif</span></label>
+        <label class="checkbox-item" data-value="kulit-kusam"><input type="checkbox" /><div class="custom-checkbox"></div><span class="checkbox-item-text">🌑 Kulit Kusam</span></label>
+        <label class="checkbox-item" data-value="bekas-jerawat"><input type="checkbox" /><div class="custom-checkbox"></div><span class="checkbox-item-text">🟤 Bekas Jerawat</span></label>
+        <label class="checkbox-item" data-value="hiperpigmentasi"><input type="checkbox" /><div class="custom-checkbox"></div><span class="checkbox-item-text">🎭 Hiperpigmentasi</span></label>
+        <label class="checkbox-item" data-value="garis-halus"><input type="checkbox" /><div class="custom-checkbox"></div><span class="checkbox-item-text">〰️ Garis Halus</span></label>
+        <label class="checkbox-item" data-value="tanda-penuaan"><input type="checkbox" /><div class="custom-checkbox"></div><span class="checkbox-item-text">⏳ Tanda Penuaan</span></label>
+        <label class="checkbox-item" data-value="kulit-merah"><input type="checkbox" /><div class="custom-checkbox"></div><span class="checkbox-item-text">❤️ Kemerahan</span></label>
+        <label class="checkbox-item" data-value="perlindungan-uv"><input type="checkbox" /><div class="custom-checkbox"></div><span class="checkbox-item-text">☀️ Proteksi UV</span></label>
+      </div>
+      <div style="display:flex;justify-content:space-between;margin-top:8px">
+        <button class="quiz-nav-back" id="step3Back">← Kembali</button>
+        <button class="quiz-nav-next" id="step3Next">Lanjut →</button>
+      </div>
+    </div>
+
+    <!-- Step 4: Age -->
+    <div class="consult-step" id="step4">
+      <div class="consult-step-header">
+        <div class="consult-step-number">4</div>
+        <div class="consult-step-title">Berapa kisaran usiamu?</div>
+      </div>
+      <div class="option-grid" id="ageOptions">
+        <div class="option-card" data-value="<20"><span class="option-card-emoji">🌱</span><span class="option-card-label">Di bawah 20</span></div>
+        <div class="option-card" data-value="20-25"><span class="option-card-emoji">🌸</span><span class="option-card-label">20 – 25</span></div>
+        <div class="option-card" data-value="26-30"><span class="option-card-emoji">✨</span><span class="option-card-label">26 – 30</span></div>
+        <div class="option-card" data-value="31-40"><span class="option-card-emoji">💫</span><span class="option-card-label">31 – 40</span></div>
+        <div class="option-card" data-value=">40"><span class="option-card-emoji">👑</span><span class="option-card-label">Di atas 40</span></div>
+      </div>
+      <div style="display:flex;justify-content:space-between">
+        <button class="quiz-nav-back" id="step4Back">← Kembali</button>
+        <button class="quiz-nav-next" id="step4Next" disabled>Lanjut →</button>
+      </div>
+    </div>
+
+    <!-- Step 5: Budget -->
+    <div class="consult-step" id="step5">
+      <div class="consult-step-header">
+        <div class="consult-step-number">5</div>
+        <div class="consult-step-title">Berapa budget skincare bulananmu?</div>
+      </div>
+      <div class="budget-slider-wrap">
+        <div class="budget-display" id="budgetDisplay">Rp 200.000</div>
+        <input type="range" id="budgetSlider" min="50000" max="1000000" step="50000" value="200000" />
+        <div class="budget-range-labels">
+          <span>Rp 50.000</span>
+          <span>Rp 1.000.000</span>
+        </div>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px">
+        <button class="cat-filter" onclick="setBudget(100000)" id="bq1">≤ Rp 100K (Budget)</button>
+        <button class="cat-filter" onclick="setBudget(300000)" id="bq2">≤ Rp 300K (Mid)</button>
+        <button class="cat-filter" onclick="setBudget(600000)" id="bq3">≤ Rp 600K (Premium)</button>
+        <button class="cat-filter" onclick="setBudget(1000000)" id="bq4">Bebas 💎</button>
+      </div>
+      <div style="display:flex;justify-content:space-between">
+        <button class="quiz-nav-back" id="step5Back">← Kembali</button>
+        <button class="quiz-nav-next" id="step5Next">✨ Lihat Rekomendasi</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/main.js"></script>
+  <script src="../js/data.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      let formData = { skinType: null, sensitivity: null, concerns: [], age: null, budget: 200000 };
+      let currentStep = 1;
+      const totalSteps = 5;
+
+      // Pre-fill from URL or user profile
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('skinType')) {
+        formData.skinType = params.get('skinType');
+        const matchCard = document.querySelector(`[data-value="${formData.skinType}"]`);
+        if (matchCard) matchCard.classList.add('selected');
+        document.getElementById('step1Next').disabled = false;
+      }
+      if (Auth.isLoggedIn()) {
+        const user = Auth.getUser();
+        if (user.skinType && !formData.skinType) {
+          formData.skinType = user.skinType;
+          const matchCard = document.querySelector(`#skinTypeOptions [data-value="${user.skinType}"]`);
+          if (matchCard) matchCard.classList.add('selected');
+          document.getElementById('step1Next').disabled = false;
+        }
+      }
+
+      function updateProgress() {
+        const pct = Math.round((currentStep / totalSteps) * 100);
+        document.getElementById('progressText').textContent = `Langkah ${currentStep} dari ${totalSteps}`;
+        document.getElementById('progressPct').textContent = pct + '%';
+        document.getElementById('progressFill').style.width = pct + '%';
+      }
+
+      function goStep(from, to) {
+        document.getElementById(`step${from}`).classList.remove('active');
+        document.getElementById(`step${to}`).classList.add('active');
+        currentStep = to;
+        updateProgress();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      // Step 1 – Skin Type
+      document.querySelectorAll('#skinTypeOptions .option-card').forEach(card => {
+        card.addEventListener('click', () => {
+          document.querySelectorAll('#skinTypeOptions .option-card').forEach(c => c.classList.remove('selected'));
+          card.classList.add('selected');
+          formData.skinType = card.dataset.value;
+          document.getElementById('step1Next').disabled = false;
+        });
+      });
+      document.getElementById('step1Next').addEventListener('click', () => goStep(1,2));
+
+      // Step 2 – Sensitivity
+      document.querySelectorAll('#sensitivityOptions .option-card').forEach(card => {
+        card.addEventListener('click', () => {
+          document.querySelectorAll('#sensitivityOptions .option-card').forEach(c => c.classList.remove('selected'));
+          card.classList.add('selected');
+          formData.sensitivity = card.dataset.value;
+          document.getElementById('step2Next').disabled = false;
+        });
+      });
+      document.getElementById('step2Back').addEventListener('click', () => goStep(2,1));
+      document.getElementById('step2Next').addEventListener('click', () => goStep(2,3));
+
+      // Step 3 – Concerns
+      document.querySelectorAll('#concernsOptions .checkbox-item input[type="checkbox"]').forEach(input => {
+        input.addEventListener('change', () => {
+          const item = input.closest('.checkbox-item');
+          item.classList.toggle('checked', input.checked);
+          const val = item.dataset.value;
+          if (input.checked) { if (!formData.concerns.includes(val)) formData.concerns.push(val); }
+          else { formData.concerns = formData.concerns.filter(c => c !== val); }
+        });
+      });
+      document.getElementById('step3Back').addEventListener('click', () => goStep(3,2));
+      document.getElementById('step3Next').addEventListener('click', () => goStep(3,4));
+
+      // Step 4 – Age
+      document.querySelectorAll('#ageOptions .option-card').forEach(card => {
+        card.addEventListener('click', () => {
+          document.querySelectorAll('#ageOptions .option-card').forEach(c => c.classList.remove('selected'));
+          card.classList.add('selected');
+          formData.age = card.dataset.value;
+          document.getElementById('step4Next').disabled = false;
+        });
+      });
+      document.getElementById('step4Back').addEventListener('click', () => goStep(4,3));
+      document.getElementById('step4Next').addEventListener('click', () => goStep(4,5));
+
+      // Step 5 – Budget
+      const slider = document.getElementById('budgetSlider');
+      slider.addEventListener('input', () => {
+        formData.budget = parseInt(slider.value);
+        document.getElementById('budgetDisplay').textContent = 'Rp ' + formData.budget.toLocaleString('id-ID');
+      });
+      window.setBudget = (val) => {
+        formData.budget = val;
+        slider.value = val;
+        document.getElementById('budgetDisplay').textContent = 'Rp ' + val.toLocaleString('id-ID');
+      };
+      document.getElementById('step5Back').addEventListener('click', () => goStep(5,4));
+      document.getElementById('step5Next').addEventListener('click', () => {
+        sessionStorage.setItem('gg_consult', JSON.stringify(formData));
+        window.location.href = 'result.html';
+      });
+    });
+  </script>
+</body>
+</html>

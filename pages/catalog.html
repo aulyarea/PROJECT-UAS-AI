@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Katalog Produk – GlowGuide</title>
+  <meta name="description" content="Jelajahi 30+ produk skincare premium yang dikurasi para ahli kecantikan di GlowGuide." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/main.css" />
+  <link rel="stylesheet" href="../css/pages.css" />
+</head>
+<body class="catalog-body">
+
+  <nav class="navbar scrolled" id="navbar">
+    <div class="nav-container">
+      <a href="../index.html" class="logo"><span class="logo-icon">✦</span><span class="logo-text">GlowGuide</span></a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="../index.html" class="nav-link">Home</a></li>
+        <li><a href="catalog.html" class="nav-link active">Produk</a></li>
+        <li><a href="ingredients.html" class="nav-link">Bahan Aktif</a></li>
+        <li><a href="quiz.html" class="nav-link">Skin Quiz</a></li>
+      </ul>
+      <div class="nav-actions" id="navActions">
+        <a href="login.html" class="btn-outline" id="btnLogin">Masuk</a>
+        <a href="register.html" class="btn-primary" id="btnRegister">Daftar</a>
+      </div>
+      <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+    </div>
+  </nav>
+
+  <div class="catalog-layout">
+    <!-- Sidebar -->
+    <aside class="catalog-sidebar">
+      <div class="sidebar-card">
+        <div class="sidebar-title">Kategori</div>
+        <div class="filter-options" id="categoryFilter">
+          <div class="filter-option active" data-cat="all">🧴 Semua Produk <span class="filter-option-count" id="countAll">30</span></div>
+          <div class="filter-option" data-cat="facial-wash">🧼 Facial Wash <span class="filter-option-count">5</span></div>
+          <div class="filter-option" data-cat="toner">💧 Toner <span class="filter-option-count">5</span></div>
+          <div class="filter-option" data-cat="serum">🔬 Serum <span class="filter-option-count">6</span></div>
+          <div class="filter-option" data-cat="moisturizer">🏺 Moisturizer <span class="filter-option-count">5</span></div>
+          <div class="filter-option" data-cat="sunscreen">☀️ Sunscreen <span class="filter-option-count">4</span></div>
+          <div class="filter-option" data-cat="mask">🌋 Mask <span class="filter-option-count">5</span></div>
+        </div>
+      </div>
+      <div class="sidebar-card">
+        <div class="sidebar-title">Jenis Kulit</div>
+        <div class="filter-options" id="skinFilter">
+          <div class="filter-option active" data-skin="all">✨ Semua</div>
+          <div class="filter-option" data-skin="berminyak">💧 Berminyak</div>
+          <div class="filter-option" data-skin="kering">🌵 Kering</div>
+          <div class="filter-option" data-skin="kombinasi">⚖️ Kombinasi</div>
+          <div class="filter-option" data-skin="sensitif">🌸 Sensitif</div>
+          <div class="filter-option" data-skin="normal">✨ Normal</div>
+        </div>
+      </div>
+      <div class="sidebar-card">
+        <div class="sidebar-title">Budget Maks</div>
+        <div class="budget-slider-wrap">
+          <div class="budget-display" id="filterBudget" style="font-size:18px">Semua</div>
+          <input type="range" id="budgetFilter" min="0" max="300000" step="25000" value="300000" />
+          <div class="budget-range-labels"><span>Gratis</span><span>Rp 300K+</span></div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="catalog-main">
+      <div class="catalog-toolbar">
+        <div class="catalog-search">
+          <span class="catalog-search-icon">🔍</span>
+          <input type="text" class="catalog-search-input" id="searchInput" placeholder="Cari produk, brand, kandungan..." />
+        </div>
+        <span class="catalog-count" id="catalogCount">Menampilkan 30 produk</span>
+      </div>
+
+      <!-- Active Filters Tags -->
+      <div id="activeFilters" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px"></div>
+
+      <div class="products-grid" id="productsGrid"></div>
+    </main>
+  </div>
+
+  <!-- Product Detail Modal -->
+  <div class="modal-overlay hidden" id="productModal">
+    <div class="modal" style="max-width:560px">
+      <div class="modal-header">
+        <span class="modal-title" id="modalTitle">Detail Produk</span>
+        <button class="modal-close" id="modalClose">✕</button>
+      </div>
+      <div style="text-align:center;font-size:80px;background:linear-gradient(135deg,var(--blush),var(--cream));border-radius:var(--radius-lg);padding:24px;margin-bottom:20px" id="modalEmoji"></div>
+      <div class="badge badge-pink mb-8" id="modalCategory"></div>
+      <div style="font-family:var(--font-display);font-size:22px;font-weight:700;color:var(--text-dark);margin-bottom:6px" id="modalName"></div>
+      <div style="font-size:12px;color:var(--text-muted);margin-bottom:12px" id="modalBrand"></div>
+      <div style="font-size:24px;font-weight:800;color:var(--rose);margin-bottom:16px" id="modalPrice"></div>
+      <div style="font-size:14px;color:var(--text-muted);line-height:1.7;margin-bottom:16px" id="modalDesc"></div>
+      <div style="margin-bottom:16px">
+        <div style="font-size:13px;font-weight:700;color:var(--text-dark);margin-bottom:8px">🔬 Kandungan Aktif:</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px" id="modalIngredients"></div>
+      </div>
+      <div style="margin-bottom:20px">
+        <div style="font-size:13px;font-weight:700;color:var(--text-dark);margin-bottom:8px">✅ Cocok untuk:</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px" id="modalSkinTypes"></div>
+      </div>
+      <div style="display:flex;gap:10px">
+        <button class="btn btn-pink" style="flex:1" id="modalWishlistBtn">💕 Tambah Wishlist</button>
+        <button class="btn btn-ghost" id="modalClose2">Tutup</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/main.js"></script>
+  <script src="../js/data.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      let activeCategory = 'all';
+      let activeSkin = 'all';
+      let maxBudget = 999999;
+      let searchQuery = '';
+      let currentProduct = null;
+
+      // Check URL params
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('skinType')) { activeSkin = params.get('skinType'); document.querySelector(`[data-skin="${activeSkin}"]`)?.classList.add('active'); document.querySelector('[data-skin="all"]')?.classList.remove('active'); }
+      if (params.get('category')) { activeCategory = params.get('category'); document.querySelector(`[data-cat="${activeCategory}"]`)?.classList.add('active'); document.querySelector('[data-cat="all"]')?.classList.remove('active'); }
+
+      function getFiltered() {
+        return GlowData.products.filter(p => {
+          if (activeCategory !== 'all' && p.category !== activeCategory) return false;
+          if (activeSkin !== 'all' && !p.skinTypes.includes(activeSkin)) return false;
+          if (p.price > maxBudget) return false;
+          if (searchQuery && !p.name.toLowerCase().includes(searchQuery) && !p.brand.toLowerCase().includes(searchQuery) && !p.description.toLowerCase().includes(searchQuery) && !p.ingredients.some(i => i.includes(searchQuery))) return false;
+          return true;
+        });
+      }
+
+      function renderProducts() {
+        const filtered = getFiltered();
+        const grid = document.getElementById('productsGrid');
+        document.getElementById('catalogCount').textContent = `Menampilkan ${filtered.length} produk`;
+
+        if (filtered.length === 0) {
+          grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:60px 0"><div style="font-size:48px;margin-bottom:12px">🔍</div><p style="color:var(--text-muted)">Tidak ada produk yang sesuai filter.</p></div>`;
+          return;
+        }
+
+        grid.innerHTML = filtered.map(p => {
+          const inWishlist = Wishlist.has(p.id);
+          return `
+            <div class="product-card" data-id="${p.id}" style="cursor:pointer">
+              <div class="product-card-img">${p.emoji}
+                <div style="position:absolute;top:10px;left:10px;background:rgba(255,247,230,0.9);border-radius:99px;padding:3px 10px;font-size:11px;font-weight:700;color:var(--rose)">⭐ ${p.rating}</div>
+              </div>
+              <div class="product-card-body">
+                <div class="product-card-category">${p.brand} · ${p.category}</div>
+                <div class="product-card-name">${p.name}</div>
+                <div class="product-card-desc">${p.description.substring(0,70)}...</div>
+                <div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:10px">
+                  ${p.skinTypes.map(s => `<span style="font-size:10px;padding:2px 8px;background:var(--cream-dark);border-radius:99px;color:var(--text-mid);font-weight:600">${s}</span>`).join('')}
+                </div>
+                <div class="product-card-footer">
+                  <span class="product-price">Rp ${p.price.toLocaleString('id-ID')}</span>
+                  <button class="wishlist-btn ${inWishlist?'active':''}" data-id="${p.id}" title="Wishlist">${inWishlist?'💕':'🤍'}</button>
+                </div>
+              </div>
+            </div>`;
+        }).join('');
+
+        // Events
+        document.querySelectorAll('.product-card').forEach(card => {
+          card.addEventListener('click', (e) => {
+            if (e.target.closest('.wishlist-btn')) return;
+            const p = GlowData.products.find(pr => pr.id === parseInt(card.dataset.id));
+            if (p) openModal(p);
+          });
+        });
+        document.querySelectorAll('.wishlist-btn').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const id = parseInt(btn.dataset.id);
+            Wishlist.toggle(id);
+            btn.classList.toggle('active');
+            btn.textContent = Wishlist.has(id) ? '💕' : '🤍';
+            Toast.success(Wishlist.has(id) ? 'Ditambahkan ke wishlist! 💕' : 'Dihapus dari wishlist');
+          });
+        });
+      }
+
+      // Category filter
+      document.querySelectorAll('#categoryFilter .filter-option').forEach(opt => {
+        opt.addEventListener('click', () => {
+          document.querySelectorAll('#categoryFilter .filter-option').forEach(o => o.classList.remove('active'));
+          opt.classList.add('active');
+          activeCategory = opt.dataset.cat;
+          renderProducts();
+        });
+      });
+
+      // Skin filter
+      document.querySelectorAll('#skinFilter .filter-option').forEach(opt => {
+        opt.addEventListener('click', () => {
+          document.querySelectorAll('#skinFilter .filter-option').forEach(o => o.classList.remove('active'));
+          opt.classList.add('active');
+          activeSkin = opt.dataset.skin;
+          renderProducts();
+        });
+      });
+
+      // Budget filter
+      document.getElementById('budgetFilter').addEventListener('input', (e) => {
+        const val = parseInt(e.target.value);
+        maxBudget = val >= 300000 ? 999999 : val;
+        document.getElementById('filterBudget').textContent = val >= 300000 ? 'Semua' : 'Rp ' + val.toLocaleString('id-ID');
+        renderProducts();
+      });
+
+      // Search
+      document.getElementById('searchInput').addEventListener('input', (e) => {
+        searchQuery = e.target.value.toLowerCase().trim();
+        renderProducts();
+      });
+
+      // Modal
+      function openModal(p) {
+        currentProduct = p;
+        document.getElementById('modalEmoji').textContent = p.emoji;
+        document.getElementById('modalTitle').textContent = 'Detail Produk';
+        document.getElementById('modalCategory').textContent = p.category;
+        document.getElementById('modalName').textContent = p.name;
+        document.getElementById('modalBrand').textContent = `oleh ${p.brand} · ⭐ ${p.rating} (${p.reviews} ulasan)`;
+        document.getElementById('modalPrice').textContent = `Rp ${p.price.toLocaleString('id-ID')}`;
+        document.getElementById('modalDesc').textContent = p.description;
+        document.getElementById('modalIngredients').innerHTML = p.ingredients.map(i => `<span class="ingredient-pill">${i.replace(/-/g,' ')}</span>`).join('');
+        document.getElementById('modalSkinTypes').innerHTML = p.skinTypes.map(s => `<span class="badge badge-pink">${s}</span>`).join('');
+        const inWishlist = Wishlist.has(p.id);
+        document.getElementById('modalWishlistBtn').textContent = inWishlist ? '💕 Di Wishlist' : '🤍 Tambah Wishlist';
+        document.getElementById('productModal').classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+      }
+
+      document.getElementById('modalWishlistBtn').addEventListener('click', () => {
+        if (!currentProduct) return;
+        Wishlist.toggle(currentProduct.id);
+        const has = Wishlist.has(currentProduct.id);
+        document.getElementById('modalWishlistBtn').textContent = has ? '💕 Di Wishlist' : '🤍 Tambah Wishlist';
+        Toast.success(has ? 'Ditambahkan ke wishlist! 💕' : 'Dihapus dari wishlist');
+        renderProducts();
+      });
+
+      function closeModal() {
+        document.getElementById('productModal').classList.add('hidden');
+        document.body.style.overflow = '';
+      }
+      document.getElementById('modalClose').addEventListener('click', closeModal);
+      document.getElementById('modalClose2').addEventListener('click', closeModal);
+      document.getElementById('productModal').addEventListener('click', (e) => { if (e.target === document.getElementById('productModal')) closeModal(); });
+
+      renderProducts();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Daftar – GlowGuide</title>
+  <meta name="description" content="Daftar akun GlowGuide gratis dan mulai perjalanan skincare personalmu sekarang." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/main.css" />
+  <link rel="stylesheet" href="../css/pages.css" />
+</head>
+<body class="auth-body">
+
+  <div class="auth-card">
+    <div class="auth-logo">
+      <a href="../index.html" class="logo">
+        <span class="logo-icon">✦</span>
+        <span class="logo-text">GlowGuide</span>
+      </a>
+      <p>Mulai perjalanan skincare-mu! 🌸</p>
+    </div>
+
+    <div id="registerAlert"></div>
+
+    <form id="registerForm" novalidate>
+      <div class="form-group">
+        <label class="form-label" for="regName">Nama Lengkap</label>
+        <input type="text" id="regName" class="form-input" placeholder="Nama kamu" required autocomplete="name" />
+        <div class="form-error" id="nameError"></div>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="regEmail">Email</label>
+        <input type="email" id="regEmail" class="form-input" placeholder="email@contoh.com" required autocomplete="email" />
+        <div class="form-error" id="regEmailError"></div>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="regPassword">Password</label>
+        <div class="password-input-wrap">
+          <input type="password" id="regPassword" class="form-input" placeholder="Minimal 6 karakter" required autocomplete="new-password" />
+          <span class="password-toggle" id="toggleRegPass" role="button">👁️</span>
+        </div>
+        <div class="form-error" id="regPasswordError"></div>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="regConfirm">Konfirmasi Password</label>
+        <div class="password-input-wrap">
+          <input type="password" id="regConfirm" class="form-input" placeholder="Ulangi password" required autocomplete="new-password" />
+          <span class="password-toggle" id="toggleRegConfirm" role="button">👁️</span>
+        </div>
+        <div class="form-error" id="confirmError"></div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Jenis Kulit (opsional)</label>
+        <select id="regSkinType" class="form-select">
+          <option value="">Pilih jenis kulit...</option>
+          <option value="berminyak">💧 Kulit Berminyak</option>
+          <option value="kering">🌵 Kulit Kering</option>
+          <option value="kombinasi">⚖️ Kulit Kombinasi</option>
+          <option value="sensitif">🌸 Kulit Sensitif</option>
+          <option value="normal">✨ Kulit Normal</option>
+        </select>
+        <div class="form-hint">Tidak tahu? Ikuti <a href="quiz.html" style="color:var(--pink-deep)">Skin Quiz</a> dulu!</div>
+      </div>
+      <button type="submit" class="btn btn-pink full-width" id="registerBtn">Daftar Gratis</button>
+    </form>
+
+    <div class="auth-footer" style="margin-top:20px">
+      Sudah punya akun? <a href="login.html">Masuk di sini</a>
+    </div>
+  </div>
+
+  <script src="../js/main.js"></script>
+  <script src="../js/data.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      if (Auth.isLoggedIn()) { window.location.href = '../index.html'; return; }
+
+      // Password toggles
+      [['toggleRegPass','regPassword'],['toggleRegConfirm','regConfirm']].forEach(([btnId, inputId]) => {
+        document.getElementById(btnId).addEventListener('click', () => {
+          const input = document.getElementById(inputId);
+          const btn = document.getElementById(btnId);
+          const hidden = input.type === 'password';
+          input.type = hidden ? 'text' : 'password';
+          btn.textContent = hidden ? '🙈' : '👁️';
+        });
+      });
+
+      document.getElementById('registerForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const name = document.getElementById('regName').value.trim();
+        const email = document.getElementById('regEmail').value.trim();
+        const password = document.getElementById('regPassword').value;
+        const confirm = document.getElementById('regConfirm').value;
+        const skinType = document.getElementById('regSkinType').value;
+        let valid = true;
+
+        // Clear errors
+        ['nameError','regEmailError','regPasswordError','confirmError'].forEach(id => {
+          document.getElementById(id).textContent = '';
+        });
+
+        if (!name || name.length < 2) {
+          document.getElementById('nameError').textContent = 'Nama minimal 2 karakter';
+          valid = false;
+        }
+        if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+          document.getElementById('regEmailError').textContent = 'Masukkan email yang valid';
+          valid = false;
+        }
+        if (!password || password.length < 6) {
+          document.getElementById('regPasswordError').textContent = 'Password minimal 6 karakter';
+          valid = false;
+        }
+        if (password !== confirm) {
+          document.getElementById('confirmError').textContent = 'Password tidak cocok';
+          valid = false;
+        }
+        if (!valid) return;
+
+        const users = JSON.parse(localStorage.getItem('gg_users') || '[]');
+        if (users.find(u => u.email === email)) {
+          document.getElementById('regEmailError').textContent = 'Email sudah terdaftar';
+          return;
+        }
+
+        const newUser = {
+          id: 'user-' + Date.now(),
+          name, email, password,
+          role: 'customer',
+          skinType: skinType || null,
+          avatar: '🌸',
+          joinDate: new Date().toISOString()
+        };
+        users.push(newUser);
+        localStorage.setItem('gg_users', JSON.stringify(users));
+        Auth.setUser(newUser);
+
+        Toast.success('Akun berhasil dibuat! Selamat bergabung 🌸');
+        setTimeout(() => {
+          window.location.href = skinType ? '../index.html' : 'quiz.html';
+        }, 900);
+      });
+    });
+  </script>
+</body>
+</html>

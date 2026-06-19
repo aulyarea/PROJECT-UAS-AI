@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GlowGuide – Skincare Recommendation System</title>
+  <meta name="description" content="Temukan produk skincare terbaik sesuai jenis kulit Anda dengan sistem rekomendasi berbasis kecerdasan buatan GlowGuide." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/main.css" />
+  <link rel="stylesheet" href="css/landing.css" />
+</head>
+<body class="landing-body">
+
+  <!-- NAVBAR -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="logo">
+        <span class="logo-icon">✦</span>
+        <span class="logo-text">GlowGuide</span>
+      </a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html" class="nav-link active">Home</a></li>
+        <li><a href="pages/catalog.html" class="nav-link">Produk</a></li>
+        <li><a href="pages/ingredients.html" class="nav-link">Bahan Aktif</a></li>
+        <li><a href="pages/quiz.html" class="nav-link">Skin Quiz</a></li>
+      </ul>
+      <div class="nav-actions" id="navActions">
+        <a href="pages/login.html" class="btn-outline" id="btnLogin">Masuk</a>
+        <a href="pages/register.html" class="btn-primary" id="btnRegister">Daftar</a>
+      </div>
+      <button class="hamburger" id="hamburger" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- HERO SECTION -->
+  <section class="hero">
+    <div class="hero-bg">
+      <div class="hero-orb orb-1"></div>
+      <div class="hero-orb orb-2"></div>
+      <div class="hero-orb orb-3"></div>
+      <div class="floating-petals">
+        <div class="petal p1">🌸</div>
+        <div class="petal p2">🌺</div>
+        <div class="petal p3">✿</div>
+        <div class="petal p4">🌸</div>
+        <div class="petal p5">💮</div>
+      </div>
+    </div>
+    <div class="hero-content">
+      <div class="hero-badge">
+        <span>✦ AI-Powered Beauty Consultant</span>
+      </div>
+      <h1 class="hero-title">
+        Temukan Rutinitas<br />
+        <em>Skincare Sempurna</em><br />
+        Untuk Kulitmu
+      </h1>
+      <p class="hero-subtitle">
+        Konsultasikan kondisi kulitmu dengan Beauty Advisor Virtual kami. 
+        Dapatkan rekomendasi produk yang dipersonalisasi berdasarkan jenis 
+        kulit, masalah, dan budget-mu.
+      </p>
+      <div class="hero-cta">
+        <a href="pages/consultation.html" class="btn-hero-primary" id="btnStartConsult">
+          <span>Mulai Konsultasi</span>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+        <a href="pages/quiz.html" class="btn-hero-secondary" id="btnSkinQuiz">
+          🔍 Tes Jenis Kulit
+        </a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat-item">
+          <span class="stat-number">50+</span>
+          <span class="stat-label">Produk Skincare</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <span class="stat-number">5</span>
+          <span class="stat-label">Jenis Kulit</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <span class="stat-number">100%</span>
+          <span class="stat-label">Personalisasi</span>
+        </div>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="hero-card-stack">
+        <div class="product-card-float card-back">
+          <div class="product-mini-img">🧴</div>
+          <div class="product-mini-info">
+            <span class="mini-name">Gentle Cleanser</span>
+            <span class="mini-type">Kulit Sensitif</span>
+          </div>
+        </div>
+        <div class="product-card-float card-mid">
+          <div class="product-mini-img">💧</div>
+          <div class="product-mini-info">
+            <span class="mini-name">Hyaluronic Serum</span>
+            <span class="mini-type">Kulit Kering</span>
+          </div>
+        </div>
+        <div class="product-card-float card-front">
+          <div class="glow-badge">✦ Recommended</div>
+          <div class="product-mini-img">✨</div>
+          <div class="product-mini-info">
+            <span class="mini-name">Niacinamide 10%</span>
+            <span class="mini-type">Kulit Berminyak</span>
+          </div>
+          <div class="match-score">
+            <span>Match</span>
+            <strong>98%</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES SECTION -->
+  <section class="features-section" id="features">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-badge">Fitur Unggulan</span>
+        <h2 class="section-title">Semua Yang Kamu Butuhkan</h2>
+        <p class="section-subtitle">Platform skincare terlengkap dengan teknologi knowledge-based system</p>
+      </div>
+      <div class="features-grid">
+        <div class="feature-card" id="featureConsult">
+          <div class="feature-icon">💬</div>
+          <h3>Beauty Consultation</h3>
+          <p>Konsultasi langsung dengan Beauty Advisor Virtual untuk mendapatkan rekomendasi produk yang dipersonalisasi.</p>
+          <a href="pages/consultation.html" class="feature-link">Mulai Sekarang →</a>
+        </div>
+        <div class="feature-card featured" id="featureQuiz">
+          <div class="feature-badge">Popular</div>
+          <div class="feature-icon">📋</div>
+          <h3>Skin Quiz</h3>
+          <p>Belum tahu jenis kulitmu? Ikuti quiz singkat kami untuk mengetahui profil kulit secara akurat.</p>
+          <a href="pages/quiz.html" class="feature-link">Ikuti Quiz →</a>
+        </div>
+        <div class="feature-card" id="featureCatalog">
+          <div class="feature-icon">🛍️</div>
+          <h3>Product Catalog</h3>
+          <p>Jelajahi lebih dari 50 produk skincare premium yang dikurasi para ahli kecantikan.</p>
+          <a href="pages/catalog.html" class="feature-link">Lihat Produk →</a>
+        </div>
+        <div class="feature-card" id="featureRoutine">
+          <div class="feature-icon">🌅</div>
+          <h3>Skincare Routine</h3>
+          <p>Dapatkan rutinitas skincare pagi dan malam yang disesuaikan dengan kondisi kulitmu.</p>
+          <a href="pages/routine.html" class="feature-link">Lihat Routine →</a>
+        </div>
+        <div class="feature-card" id="featureIngredient">
+          <div class="feature-icon">🔬</div>
+          <h3>Ingredient Education</h3>
+          <p>Pelajari kandungan aktif skincare dan manfaatnya untuk kulitmu secara mendalam.</p>
+          <a href="pages/ingredients.html" class="feature-link">Pelajari →</a>
+        </div>
+        <div class="feature-card" id="featureWishlist">
+          <div class="feature-icon">💝</div>
+          <h3>Wishlist Produk</h3>
+          <p>Simpan produk favoritmu dan pantau semua yang ingin kamu coba nanti.</p>
+          <a href="pages/wishlist.html" class="feature-link">Lihat Wishlist →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="how-it-works">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-badge">Cara Kerja</span>
+        <h2 class="section-title">Mudah & Cepat</h2>
+      </div>
+      <div class="steps-grid">
+        <div class="step-item">
+          <div class="step-num">01</div>
+          <div class="step-icon">📝</div>
+          <h3>Jawab Pertanyaan</h3>
+          <p>Ceritakan kondisi kulitmu melalui serangkaian pertanyaan yang mudah dipahami</p>
+        </div>
+        <div class="step-arrow">→</div>
+        <div class="step-item">
+          <div class="step-num">02</div>
+          <div class="step-icon">🧠</div>
+          <h3>Analisis AI</h3>
+          <p>Sistem pakar kami menganalisis jawaban dengan ratusan aturan kecantikan</p>
+        </div>
+        <div class="step-arrow">→</div>
+        <div class="step-item">
+          <div class="step-num">03</div>
+          <div class="step-icon">✨</div>
+          <h3>Rekomendasi Personal</h3>
+          <p>Terima rekomendasi produk dan rutinitas yang sempurna untuk kulitmu</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SKIN TYPES SECTION -->
+  <section class="skin-types-section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-badge">Jenis Kulit</span>
+        <h2 class="section-title">Kami Melayani Semua Tipe Kulit</h2>
+      </div>
+      <div class="skin-types-grid">
+        <div class="skin-type-card" data-type="berminyak">
+          <div class="skin-type-icon">💧</div>
+          <h3>Kulit Berminyak</h3>
+          <p>Produk oil-control & pore-minimizing</p>
+        </div>
+        <div class="skin-type-card" data-type="kering">
+          <div class="skin-type-icon">🌵</div>
+          <h3>Kulit Kering</h3>
+          <p>Produk hidrasi & nutrisi intensif</p>
+        </div>
+        <div class="skin-type-card" data-type="kombinasi">
+          <div class="skin-type-icon">⚖️</div>
+          <h3>Kulit Kombinasi</h3>
+          <p>Produk balancing & multi-zone care</p>
+        </div>
+        <div class="skin-type-card" data-type="sensitif">
+          <div class="skin-type-icon">🌸</div>
+          <h3>Kulit Sensitif</h3>
+          <p>Produk gentle & soothing formula</p>
+        </div>
+        <div class="skin-type-card" data-type="normal">
+          <div class="skin-type-icon">✨</div>
+          <h3>Kulit Normal</h3>
+          <p>Produk maintenance & perlindungan</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA SECTION -->
+  <section class="cta-section">
+    <div class="cta-orb cta-orb-1"></div>
+    <div class="cta-orb cta-orb-2"></div>
+    <div class="container">
+      <div class="cta-content">
+        <h2>Siap Untuk Kulit Yang Lebih Sehat?</h2>
+        <p>Bergabunglah dan temukan rutinitas skincare ideal mu sekarang juga!</p>
+        <div class="cta-actions">
+          <a href="pages/register.html" class="btn-cta-primary" id="btnJoinNow">Daftar Gratis</a>
+          <a href="pages/consultation.html" class="btn-cta-secondary" id="btnTryConsult">Coba Konsultasi</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="logo">
+            <span class="logo-icon">✦</span>
+            <span class="logo-text">GlowGuide</span>
+          </div>
+          <p>Platform rekomendasi skincare berbasis kecerdasan buatan untuk kulit yang lebih sehat dan bercahaya.</p>
+        </div>
+        <div class="footer-links">
+          <h4>Fitur</h4>
+          <ul>
+            <li><a href="pages/consultation.html">Konsultasi</a></li>
+            <li><a href="pages/quiz.html">Skin Quiz</a></li>
+            <li><a href="pages/catalog.html">Produk</a></li>
+            <li><a href="pages/routine.html">Rutinitas</a></li>
+          </ul>
+        </div>
+        <div class="footer-links">
+          <h4>Info</h4>
+          <ul>
+            <li><a href="pages/ingredients.html">Bahan Aktif</a></li>
+            <li><a href="pages/wishlist.html">Wishlist</a></li>
+            <li><a href="pages/history.html">Riwayat</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2025 GlowGuide. Dibuat dengan 💕 untuk kulit sehat.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+  <script src="js/landing.js"></script>
+</body>
+</html>
