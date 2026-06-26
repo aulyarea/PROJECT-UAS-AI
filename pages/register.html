@@ -88,7 +88,7 @@
         });
       });
 
-      document.getElementById('registerForm').addEventListener('submit', (e) => {
+      document.getElementById('registerForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         const name = document.getElementById('regName').value.trim();
         const email = document.getElementById('regEmail').value.trim();
@@ -120,28 +120,29 @@
         }
         if (!valid) return;
 
-        const users = JSON.parse(localStorage.getItem('gg_users') || '[]');
-        if (users.find(u => u.email === email)) {
-          document.getElementById('regEmailError').textContent = 'Email sudah terdaftar';
-          return;
+        try {
+          const res = await fetch('/api/register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, email, password, skinType })
+          });
+          
+          const data = await res.json();
+          
+          if (!res.ok) {
+            document.getElementById('regEmailError').textContent = data.message || 'Gagal mendaftar';
+            return;
+          }
+
+          Auth.setUser(data);
+          Toast.success('Akun berhasil dibuat! Selamat bergabung 🌸');
+          setTimeout(() => {
+            window.location.href = skinType ? '../index.html' : 'quiz.html';
+          }, 900);
+        } catch (error) {
+          Toast.error('Gagal terhubung ke server');
+          console.error(error);
         }
-
-        const newUser = {
-          id: 'user-' + Date.now(),
-          name, email, password,
-          role: 'customer',
-          skinType: skinType || null,
-          avatar: '🌸',
-          joinDate: new Date().toISOString()
-        };
-        users.push(newUser);
-        localStorage.setItem('gg_users', JSON.stringify(users));
-        Auth.setUser(newUser);
-
-        Toast.success('Akun berhasil dibuat! Selamat bergabung 🌸');
-        setTimeout(() => {
-          window.location.href = skinType ? '../index.html' : 'quiz.html';
-        }, 900);
       });
     });
   </script>

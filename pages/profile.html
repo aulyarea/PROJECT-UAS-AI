@@ -134,7 +134,7 @@
       document.getElementById('profSkin').value = currentUser.skinType || '';
 
       // Save form
-      document.getElementById('profileForm').addEventListener('submit', (e) => {
+      document.getElementById('profileForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         const newName = document.getElementById('profName').value.trim();
         const newSkin = document.getElementById('profSkin').value;
@@ -144,27 +144,32 @@
           return;
         }
 
-        // Update local session
-        currentUser.name = newName;
-        currentUser.skinType = newSkin || null;
-        Auth.setUser(currentUser);
-
-        // Update DB
-        const users = JSON.parse(localStorage.getItem('gg_users') || '[]');
-        const index = users.findIndex(u => u.email === currentUser.email);
-        if (index > -1) {
-          users[index] = currentUser;
-          localStorage.setItem('gg_users', JSON.stringify(users));
+        try {
+          const res = await fetch(`/api/users/${currentUser.id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name: newName, skinType: newSkin || null })
+          });
+          
+          if (res.ok) {
+            const updatedUser = await res.json();
+            Auth.setUser(updatedUser);
+            
+            // Update display
+            document.getElementById('dispName').textContent = updatedUser.name;
+            document.getElementById('dispSkinType').textContent = updatedUser.skinType 
+              ? `${skinEmojis[updatedUser.skinType]} Kulit ${updatedUser.skinType.charAt(0).toUpperCase() + updatedUser.skinType.slice(1)}` 
+              : 'Belum Set Kulit';
+            
+            Toast.success('Profil berhasil diperbarui! 💾');
+            updateNavAuth(); // Refresh navbar name
+          } else {
+            Toast.error('Gagal memperbarui profil di server.');
+          }
+        } catch (error) {
+          Toast.error('Gagal terhubung ke server.');
+          console.error(error);
         }
-
-        // Update display
-        document.getElementById('dispName').textContent = currentUser.name;
-        document.getElementById('dispSkinType').textContent = currentUser.skinType 
-          ? `${skinEmojis[currentUser.skinType]} Kulit ${currentUser.skinType.charAt(0).toUpperCase() + currentUser.skinType.slice(1)}` 
-          : 'Belum Set Kulit';
-        
-        Toast.success('Profil berhasil diperbarui! 💾');
-        updateNavAuth(); // Refresh navbar name
       });
 
       // Actions
@@ -172,11 +177,13 @@
         Auth.logout();
       });
 
-      document.getElementById('btnDeleteAccount').addEventListener('click', () => {
+      document.getElementById('btnDeleteAccount').addEventListener('click', async () => {
         if (confirm('Apakah Anda yakin ingin menghapus akun? Semua data (riwayat, wishlist) akan hilang permanen.')) {
-          const users = JSON.parse(localStorage.getItem('gg_users') || '[]');
-          const newUsers = users.filter(u => u.email !== currentUser.email);
-          localStorage.setItem('gg_users', JSON.stringify(newUsers));
+          try {
+            await fetch(`/api/users/${currentUser.id}`, { method: 'DELETE' });
+          } catch (e) {
+            console.error('Gagal hapus di server', e);
+          }
           
           History.clear();
           localStorage.removeItem('gg_wishlist');

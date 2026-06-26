@@ -241,7 +241,7 @@
   <script src="../js/main.js"></script>
   <script src="../js/data.js"></script>
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('DOMContentLoaded', async () => {
       // Auth guard
       if (!Auth.isAdmin()) {
         Toast.error('Akses ditolak. Login sebagai admin.');
@@ -264,7 +264,13 @@
       });
 
       // ── DASHBOARD ──
-      const users = JSON.parse(localStorage.getItem('gg_users') || '[]');
+      let users = [];
+      try {
+        const res = await fetch('/api/users');
+        if (res.ok) users = await res.json();
+      } catch (err) {
+        console.error('Gagal mengambil data pengguna dari server', err);
+      }
       const history = History.get();
       const consults = history.filter(h => h.type === 'consultation');
       document.getElementById('statUsers').textContent = users.length;
