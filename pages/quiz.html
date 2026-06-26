@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Skin Quiz – GlowGuide</title>
+  <meta name="description" content="Ikuti Skin Quiz GlowGuide untuk mengetahui jenis kulitmu secara akurat dan dapatkan rekomendasi produk yang tepat." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/main.css" />
+  <link rel="stylesheet" href="../css/pages.css" />
+</head>
+<body class="quiz-body">
+
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <a href="../index.html" class="logo"><span class="logo-icon">✦</span><span class="logo-text">GlowGuide</span></a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="../index.html" class="nav-link">Home</a></li>
+        <li><a href="catalog.html" class="nav-link">Produk</a></li>
+        <li><a href="ingredients.html" class="nav-link">Bahan Aktif</a></li>
+        <li><a href="quiz.html" class="nav-link active">Skin Quiz</a></li>
+      </ul>
+      <div class="nav-actions" id="navActions">
+        <a href="login.html" class="btn-outline" id="btnLogin">Masuk</a>
+        <a href="register.html" class="btn-primary" id="btnRegister">Daftar</a>
+      </div>
+      <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+    </div>
+  </nav>
+
+  <div class="quiz-container">
+    <!-- Quiz Header -->
+    <div style="text-align:center; margin-bottom:32px;">
+      <div class="section-badge">🔍 Skin Quiz</div>
+      <h1 style="font-family:var(--font-display);font-size:clamp(24px,4vw,36px);font-weight:700;color:var(--text-dark);margin:12px 0 8px">Kenali Jenis Kulitmu</h1>
+      <p style="color:var(--text-muted);font-size:15px">Jawab 8 pertanyaan singkat untuk mendapatkan analisis kulit yang akurat</p>
+    </div>
+
+    <!-- Progress -->
+    <div class="quiz-progress-wrap" id="quizProgress">
+      <div class="quiz-progress-info">
+        <span id="progressText">Pertanyaan 1 dari 8</span>
+        <span id="progressPct">0%</span>
+      </div>
+      <div class="quiz-progress-bar">
+        <div class="quiz-progress-fill" id="progressFill" style="width:0%"></div>
+      </div>
+    </div>
+
+    <!-- Question Card -->
+    <div class="quiz-card" id="quizCard">
+      <div class="quiz-question-num" id="questionNum">Pertanyaan 1</div>
+      <div style="font-size:36px;margin-bottom:12px" id="questionEmoji">⏰</div>
+      <div class="quiz-question" id="questionText"></div>
+      <div class="quiz-options" id="quizOptions"></div>
+      <div class="quiz-nav">
+        <button class="quiz-nav-back" id="btnBack" style="display:none">← Kembali</button>
+        <button class="quiz-nav-next" id="btnNext" disabled>Lanjut →</button>
+      </div>
+    </div>
+
+    <!-- Result Card -->
+    <div class="quiz-card quiz-result" id="quizResult">
+      <div class="result-icon" id="resultEmoji">✨</div>
+      <p class="result-title">Analisis Selesai!</p>
+      <p class="result-skin-type" id="resultSkinType">Kulit Normal</p>
+      <p class="result-desc" id="resultDesc"></p>
+      <div class="result-traits" id="resultTraits"></div>
+
+      <div style="background:var(--cream);border-radius:var(--radius-lg);padding:20px;margin-bottom:24px;text-align:left">
+        <div style="font-weight:700;font-size:14px;color:var(--text-dark);margin-bottom:12px">💡 Tips Perawatan:</div>
+        <ul id="resultTips" style="display:flex;flex-direction:column;gap:8px;font-size:13px;color:var(--text-muted);padding-left:16px;list-style:disc"></ul>
+      </div>
+
+      <div class="result-cta">
+        <a id="btnGoConsult" href="consultation.html" class="btn btn-pink">💬 Konsultasi Sekarang</a>
+        <a href="catalog.html" class="btn btn-ghost">🛍️ Lihat Produk</a>
+        <button class="btn btn-ghost" id="btnRetakeQuiz">🔄 Ulangi Quiz</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/main.js"></script>
+  <script src="../js/data.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const questions = GlowData.quizQuestions;
+      const skinResults = GlowData.skinTypeResults;
+      let currentQ = 0;
+      let answers = {};
+      const scores = { berminyak: 0, kering: 0, kombinasi: 0, sensitif: 0, normal: 0 };
+
+      function renderQuestion() {
+        const q = questions[currentQ];
+        const total = questions.length;
+        const pct = Math.round((currentQ / total) * 100);
+
+        document.getElementById('progressText').textContent = `Pertanyaan ${currentQ + 1} dari ${total}`;
+        document.getElementById('progressPct').textContent = pct + '%';
+        document.getElementById('progressFill').style.width = pct + '%';
+        document.getElementById('questionNum').textContent = `Pertanyaan ${currentQ + 1}`;
+        document.getElementById('questionEmoji').textContent = q.emoji;
+        document.getElementById('questionText').textContent = q.question;
+
+        const optContainer = document.getElementById('quizOptions');
+        optContainer.innerHTML = '';
+        q.options.forEach(opt => {
+          const div = document.createElement('div');
+          div.className = 'quiz-option' + (answers[currentQ] === opt.value ? ' selected' : '');
+          div.innerHTML = `
+            <div class="quiz-option-indicator"></div>
+            <span class="quiz-option-emoji">${opt.emoji}</span>
+            <span class="quiz-option-text">${opt.label}</span>`;
+          div.addEventListener('click', () => selectOption(opt, div));
+          optContainer.appendChild(div);
+        });
+
+        document.getElementById('btnBack').style.display = currentQ > 0 ? 'block' : 'none';
+        document.getElementById('btnNext').disabled = answers[currentQ] === undefined;
+        document.getElementById('btnNext').textContent = currentQ === total - 1 ? 'Lihat Hasil ✨' : 'Lanjut →';
+      }
+
+      function selectOption(opt, el) {
+        document.querySelectorAll('.quiz-option').forEach(o => o.classList.remove('selected'));
+        el.classList.add('selected');
+        answers[currentQ] = opt.value;
+
+        // Apply scores
+        if (opt.score) {
+          Object.entries(opt.score).forEach(([type, val]) => { scores[type] += val; });
+        }
+        document.getElementById('btnNext').disabled = false;
+      }
+
+      document.getElementById('btnNext').addEventListener('click', () => {
+        if (currentQ < questions.length - 1) {
+          currentQ++;
+          renderQuestion();
+        } else {
+          showResult();
+        }
+      });
+
+      document.getElementById('btnBack').addEventListener('click', () => {
+        if (currentQ > 0) { currentQ--; renderQuestion(); }
+      });
+
+      function showResult() {
+        const winner = Object.entries(scores).sort((a,b) => b[1]-a[1])[0][0];
+        const result = skinResults[winner];
+        document.getElementById('quizProgress').style.display = 'none';
+        document.getElementById('quizCard').style.display = 'none';
+        const resultEl = document.getElementById('quizResult');
+        resultEl.classList.add('show');
+
+        document.getElementById('resultEmoji').textContent = result.emoji;
+        document.getElementById('resultSkinType').textContent = result.name;
+        document.getElementById('resultDesc').textContent = result.description;
+
+        const traitsEl = document.getElementById('resultTraits');
+        traitsEl.innerHTML = result.traits.map(t => `<span class="trait-tag">${t}</span>`).join('');
+
+        const tipsEl = document.getElementById('resultTips');
+        tipsEl.innerHTML = result.healthTips.map(t => `<li>${t}</li>`).join('');
+
+        // Save to user profile
+        if (Auth.isLoggedIn()) {
+          const user = Auth.getUser();
+          user.skinType = winner;
+          Auth.setUser(user);
+        }
+
+        // Save quiz result to history
+        History.add({ type: 'quiz', skinType: winner, scores, emoji: result.emoji });
+
+        document.getElementById('btnGoConsult').href = `consultation.html?skinType=${winner}`;
+      }
+
+      document.getElementById('btnRetakeQuiz').addEventListener('click', () => {
+        currentQ = 0;
+        answers = {};
+        Object.keys(scores).forEach(k => scores[k] = 0);
+        document.getElementById('quizProgress').style.display = 'block';
+        document.getElementById('quizCard').style.display = 'block';
+        document.getElementById('quizResult').classList.remove('show');
+        renderQuestion();
+      });
+
+      renderQuestion();
+    });
+  </script>
+</body>
+</html>

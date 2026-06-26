@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wishlist – GlowGuide</title>
+  <meta name="description" content="Lihat dan kelola daftar produk skincare favorit yang ingin kamu coba di GlowGuide." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/main.css" />
+  <link rel="stylesheet" href="../css/pages.css" />
+</head>
+<body class="wishlist-body">
+
+  <nav class="navbar scrolled" id="navbar">
+    <div class="nav-container">
+      <a href="../index.html" class="logo"><span class="logo-icon">✦</span><span class="logo-text">GlowGuide</span></a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="../index.html" class="nav-link">Home</a></li>
+        <li><a href="catalog.html" class="nav-link">Produk</a></li>
+        <li><a href="wishlist.html" class="nav-link active">Wishlist</a></li>
+      </ul>
+      <div class="nav-actions" id="navActions">
+        <a href="login.html" class="btn-outline" id="btnLogin">Masuk</a>
+        <a href="register.html" class="btn-primary" id="btnRegister">Daftar</a>
+      </div>
+      <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+    </div>
+  </nav>
+
+  <div class="wishlist-container">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:32px;flex-wrap:wrap;gap:16px">
+      <div>
+        <div class="section-badge" style="display:inline-block;margin-bottom:8px">💝 Wishlist Saya</div>
+        <h1 style="font-family:var(--font-display);font-size:clamp(22px,3vw,32px);font-weight:700;color:var(--text-dark)">Produk Favoritku</h1>
+        <p style="color:var(--text-muted);font-size:14px;margin-top:4px" id="wishlistCount">0 produk tersimpan</p>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn btn-ghost" id="btnClearWishlist">🗑️ Hapus Semua</button>
+        <a href="catalog.html" class="btn btn-pink">🛍️ Tambah Produk</a>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div id="emptyWishlist" class="hidden" style="text-align:center;padding:80px 0;background:var(--white);border-radius:var(--radius-xl);border:1px solid rgba(247,200,211,.3)">
+      <div style="font-size:64px;margin-bottom:16px">💝</div>
+      <h3 style="font-family:var(--font-display);font-size:22px;color:var(--text-dark);margin-bottom:8px">Wishlist Masih Kosong</h3>
+      <p style="color:var(--text-muted);margin-bottom:24px;font-size:14px">Tambahkan produk yang ingin kamu coba dari katalog kami</p>
+      <a href="catalog.html" class="btn btn-pink">Jelajahi Produk</a>
+    </div>
+
+    <!-- Total Budget -->
+    <div id="budgetSummary" class="hidden" style="background:linear-gradient(135deg,var(--pink-deep),var(--rose));border-radius:var(--radius-xl);padding:24px;margin-bottom:24px;color:white;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+      <div>
+        <div style="font-size:13px;opacity:.85;margin-bottom:4px">Total Estimasi Budget</div>
+        <div style="font-family:var(--font-display);font-size:28px;font-weight:700" id="totalBudget">Rp 0</div>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <a href="consultation.html" class="btn" style="background:rgba(255,255,255,.2);color:white;border:1.5px solid rgba(255,255,255,.4);padding:10px 20px;font-size:13px">💬 Konsultasi</a>
+        <a href="routine.html" class="btn" style="background:white;color:var(--rose);padding:10px 20px;font-size:13px;font-weight:700">🌅 Lihat Routine</a>
+      </div>
+    </div>
+
+    <!-- Wishlist Grid -->
+    <div class="wishlist-grid" id="wishlistGrid"></div>
+  </div>
+
+  <script src="../js/main.js"></script>
+  <script src="../js/data.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      function render() {
+        const ids = Wishlist.get();
+        const products = GlowData.products.filter(p => ids.includes(p.id));
+        const grid = document.getElementById('wishlistGrid');
+        const empty = document.getElementById('emptyWishlist');
+        const budgetDiv = document.getElementById('budgetSummary');
+
+        document.getElementById('wishlistCount').textContent = `${products.length} produk tersimpan`;
+
+        if (products.length === 0) {
+          empty.classList.remove('hidden');
+          budgetDiv.classList.add('hidden');
+          grid.innerHTML = '';
+          return;
+        }
+
+        empty.classList.add('hidden');
+        budgetDiv.classList.remove('hidden');
+        const total = products.reduce((sum, p) => sum + p.price, 0);
+        document.getElementById('totalBudget').textContent = 'Rp ' + total.toLocaleString('id-ID');
+
+        grid.innerHTML = products.map(p => `
+          <div class="product-card" style="position:relative">
+            <button class="wishlist-remove-btn" data-id="${p.id}" title="Hapus dari wishlist">✕</button>
+            <div class="product-card-img">${p.emoji}
+              <div style="position:absolute;top:10px;left:10px;background:rgba(255,247,230,.9);border-radius:99px;padding:3px 10px;font-size:11px;font-weight:700;color:var(--rose)">⭐ ${p.rating}</div>
+            </div>
+            <div class="product-card-body">
+              <div class="product-card-category">${p.brand} · ${p.category}</div>
+              <div class="product-card-name">${p.name}</div>
+              <div class="product-card-desc">${p.description.substring(0,65)}...</div>
+              <div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:10px">
+                ${p.skinTypes.map(s => `<span style="font-size:10px;padding:2px 8px;background:var(--cream-dark);border-radius:99px;color:var(--text-mid);font-weight:600">${s}</span>`).join('')}
+              </div>
+              <div class="product-card-footer">
+                <span class="product-price">Rp ${p.price.toLocaleString('id-ID')}</span>
+                <button class="wishlist-btn active" data-id="${p.id}">💕</button>
+              </div>
+            </div>
+          </div>`).join('');
+
+        document.querySelectorAll('.wishlist-remove-btn').forEach(btn => {
+          btn.addEventListener('click', e => {
+            e.stopPropagation();
+            Wishlist.remove(parseInt(btn.dataset.id));
+            Toast.info('Dihapus dari wishlist');
+            render();
+          });
+        });
+        document.querySelectorAll('.wishlist-btn').forEach(btn => {
+          btn.addEventListener('click', e => {
+            e.stopPropagation();
+            Wishlist.remove(parseInt(btn.dataset.id));
+            Toast.info('Dihapus dari wishlist');
+            render();
+          });
+        });
+      }
+
+      document.getElementById('btnClearWishlist').addEventListener('click', () => {
+        if (confirm('Hapus semua produk dari wishlist?')) {
+          localStorage.removeItem('gg_wishlist');
+          Toast.info('Wishlist dikosongkan');
+          render();
+        }
+      });
+
+      render();
+    });
+  </script>
+</body>
+</html>

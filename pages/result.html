@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hasil Analisis – GlowGuide</title>
+  <meta name="description" content="Lihat hasil analisis kulit dan rekomendasi produk skincare personalmu dari Beauty Advisor Virtual GlowGuide." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/main.css" />
+  <link rel="stylesheet" href="../css/pages.css" />
+  <style>
+    .reco-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:16px; margin-bottom:24px; }
+    .ingredient-rec-list { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:16px; }
+    .ingredient-rec { padding:8px 16px; background:var(--cream-dark); border-radius:var(--radius-full); font-size:13px; font-weight:600; color:var(--text-mid); cursor:pointer; transition:var(--transition); border:1.5px solid transparent; }
+    .ingredient-rec:hover { border-color:var(--pink-mid); color:var(--pink-deep); }
+    .avoid-tag { padding:6px 14px; background:#FEECEC; color:var(--error); border-radius:var(--radius-full); font-size:12px; font-weight:600; }
+    .score-bar-wrap { margin-bottom:12px; }
+    .score-bar-label { display:flex; justify-content:space-between; font-size:13px; font-weight:600; color:var(--text-mid); margin-bottom:4px; }
+    .score-bar { height:8px; background:rgba(247,200,211,0.3); border-radius:99px; overflow:hidden; }
+    .score-bar-fill { height:100%; border-radius:99px; background:linear-gradient(90deg,var(--pink-soft),var(--pink-deep)); transition:width 1.2s ease; }
+  </style>
+</head>
+<body class="analysis-body">
+
+  <nav class="navbar scrolled" id="navbar">
+    <div class="nav-container">
+      <a href="../index.html" class="logo"><span class="logo-icon">✦</span><span class="logo-text">GlowGuide</span></a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="../index.html" class="nav-link">Home</a></li>
+        <li><a href="catalog.html" class="nav-link">Produk</a></li>
+        <li><a href="consultation.html" class="nav-link">Konsultasi</a></li>
+      </ul>
+      <div class="nav-actions" id="navActions">
+        <a href="login.html" class="btn-outline" id="btnLogin">Masuk</a>
+        <a href="register.html" class="btn-primary" id="btnRegister">Daftar</a>
+      </div>
+      <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+    </div>
+  </nav>
+
+  <div class="analysis-container">
+    <div id="noData" class="hidden" style="text-align:center;padding:80px 0">
+      <div style="font-size:56px;margin-bottom:16px">🔍</div>
+      <h2 style="font-family:var(--font-display);font-size:24px;margin-bottom:8px">Belum Ada Data Konsultasi</h2>
+      <p style="color:var(--text-muted);margin-bottom:24px">Silakan isi formulir konsultasi terlebih dahulu.</p>
+      <a href="consultation.html" class="btn btn-pink">Mulai Konsultasi</a>
+    </div>
+
+    <div id="resultContent">
+      <!-- Advisor Bubble -->
+      <div class="advisor-bubble">
+        <div class="advisor-avatar">🌸</div>
+        <div class="advisor-name">✦ Beauty Advisor Virtual – GlowGuide</div>
+        <div class="advisor-message" id="advisorMessage">Menganalisis kondisi kulitmu...</div>
+      </div>
+
+      <!-- Skin Profile -->
+      <div class="skin-profile-card">
+        <div class="skin-profile-header">
+          <div class="skin-type-badge-large" id="skinBadge">✨</div>
+          <div class="skin-profile-info">
+            <h2 id="skinTypeName">Kulit Normal</h2>
+            <p id="skinTypeDesc">Deskripsi jenis kulit</p>
+          </div>
+        </div>
+
+        <div style="margin-bottom:20px">
+          <div style="font-weight:700;font-size:14px;color:var(--text-dark);margin-bottom:12px">📊 Profil Kesehatan Kulit</div>
+          <div class="score-bar-wrap" id="healthScores"></div>
+        </div>
+
+        <div>
+          <div style="font-weight:700;font-size:14px;color:var(--text-dark);margin-bottom:10px">⚠️ Keluhan Utama:</div>
+          <div class="concerns-grid" id="concernsList"></div>
+        </div>
+      </div>
+
+      <!-- Recommended Ingredients -->
+      <div class="skin-profile-card">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+          <div style="font-family:var(--font-display);font-size:18px;font-weight:700;color:var(--text-dark)">🔬 Kandungan yang Direkomendasikan</div>
+          <a href="ingredients.html" style="font-size:13px;color:var(--pink-deep);font-weight:600">Pelajari →</a>
+        </div>
+        <div class="ingredient-rec-list" id="ingredientList"></div>
+
+        <div style="font-weight:700;font-size:14px;color:var(--text-dark);margin-bottom:10px;margin-top:16px">🚫 Kandungan yang Perlu Dihindari:</div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px" id="avoidList"></div>
+      </div>
+
+      <!-- Recommended Products -->
+      <div class="skin-profile-card">
+        <div style="font-family:var(--font-display);font-size:18px;font-weight:700;color:var(--text-dark);margin-bottom:20px">🛍️ Produk Rekomendasi</div>
+        <div class="reco-grid" id="productReco"></div>
+        <div style="text-align:center;margin-top:8px">
+          <a href="catalog.html" class="btn btn-ghost">Lihat Semua Produk →</a>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:8px">
+        <a href="routine.html" class="btn btn-pink" id="btnRoutine">🌅 Lihat Rutinitas Lengkap</a>
+        <a href="consultation.html" class="btn btn-ghost">🔄 Konsultasi Ulang</a>
+        <button class="btn btn-ghost" id="btnSaveResult">💾 Simpan Hasil</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/main.js"></script>
+  <script src="../js/data.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const raw = sessionStorage.getItem('gg_consult');
+      if (!raw) { document.getElementById('noData').classList.remove('hidden'); document.getElementById('resultContent').classList.add('hidden'); return; }
+
+      const data = JSON.parse(raw);
+      const { skinType, sensitivity, concerns, age, budget } = data;
+      const skinResult = GlowData.skinTypeResults[skinType] || GlowData.skinTypeResults['normal'];
+
+      // ── Find best rule ──
+      let bestRule = null;
+      let bestScore = -1;
+      GlowData.rules.forEach(rule => {
+        let score = 0;
+        if (rule.conditions.skinType === skinType) score += 3;
+        if (rule.conditions.concerns) {
+          rule.conditions.concerns.forEach(c => { if (concerns.includes(c)) score += 2; });
+        }
+        if (rule.conditions.sensitivity && rule.conditions.sensitivity.includes(sensitivity)) score += 1;
+        if (score > bestScore) { bestScore = score; bestRule = rule; }
+      });
+
+      if (!bestRule) bestRule = GlowData.rules.find(r => r.conditions.skinType === skinType) || GlowData.rules[7];
+
+      // ── Advisor message ──
+      const concernsText = concerns.length > 0 ? `dengan masalah ${concerns.slice(0,3).join(', ')}` : '';
+      const budgetText = 'Rp ' + budget.toLocaleString('id-ID');
+      document.getElementById('advisorMessage').textContent =
+        `Berdasarkan hasil analisis, kulit Anda termasuk ${skinResult.name} ${concernsText}. Sensitivitas kulit Anda ${sensitivity || 'sedang'}, dan kami menyesuaikan rekomendasi dengan budget Anda sekitar ${budgetText}/bulan. Berikut adalah panduan perawatan kulit yang paling sesuai untuk kondisi Anda saat ini.`;
+
+      // ── Skin profile ──
+      document.getElementById('skinBadge').textContent = skinResult.emoji;
+      document.getElementById('skinTypeName').textContent = skinResult.name;
+      document.getElementById('skinTypeDesc').textContent = skinResult.description.substring(0, 100) + '...';
+
+      // ── Health scores ──
+      const scoreMap = {
+        'Hidrasi': skinType === 'kering' ? 35 : skinType === 'kombinasi' ? 60 : skinType === 'berminyak' ? 70 : 75,
+        'Kontrol Minyak': skinType === 'berminyak' ? 30 : skinType === 'kombinasi' ? 55 : skinType === 'kering' ? 85 : 75,
+        'Sensitivitas': sensitivity === 'tinggi' ? 30 : sensitivity === 'sedang' ? 60 : 85,
+        'Ketebalan Barrier': skinType === 'sensitif' ? 35 : skinType === 'kering' ? 55 : 75,
+        'Kecerahan': concerns.includes('kulit-kusam') || concerns.includes('hiperpigmentasi') ? 40 : 75
+      };
+      const scoresEl = document.getElementById('healthScores');
+      Object.entries(scoreMap).forEach(([label, val]) => {
+        scoresEl.innerHTML += `<div class="score-bar-wrap"><div class="score-bar-label"><span>${label}</span><span>${val}%</span></div><div class="score-bar"><div class="score-bar-fill" style="width:0%" data-target="${val}"></div></div></div>`;
+      });
+      setTimeout(() => {
+        document.querySelectorAll('.score-bar-fill').forEach(el => {
+          el.style.width = el.dataset.target + '%';
+        });
+      }, 200);
+
+      // ── Concerns ──
+      const concernsEl = document.getElementById('concernsList');
+      if (concerns.length > 0) {
+        concerns.forEach(c => { concernsEl.innerHTML += `<span class="concern-tag">${c.replace(/-/g,' ')}</span>`; });
+      } else {
+        concernsEl.innerHTML = '<span class="concern-tag">Tidak ada keluhan khusus ✨</span>';
+      }
+
+      // ── Ingredients ──
+      const ingList = document.getElementById('ingredientList');
+      bestRule.output.ingredients.forEach(ingId => {
+        const ing = GlowData.ingredients.find(i => i.id === ingId);
+        if (ing) {
+          const el = document.createElement('span');
+          el.className = 'ingredient-rec';
+          el.textContent = ing.emoji + ' ' + ing.name;
+          el.title = ing.benefit;
+          el.onclick = () => window.location.href = `ingredients.html#${ingId}`;
+          ingList.appendChild(el);
+        }
+      });
+
+      // ── Avoid ──
+      const avoidEl = document.getElementById('avoidList');
+      if (bestRule.output.avoid && bestRule.output.avoid.length > 0) {
+        bestRule.output.avoid.forEach(a => { avoidEl.innerHTML += `<span class="avoid-tag">🚫 ${a.replace(/-/g,' ')}</span>`; });
+      } else {
+        avoidEl.innerHTML = '<span style="font-size:13px;color:var(--text-muted)">Tidak ada pantangan khusus untuk jenis kulitmu</span>';
+      }
+
+      // ── Product recommendations ──
+      const routineKey = bestRule.output.routine || skinResult.routineKey;
+      const routine = GlowData.routines[routineKey] || GlowData.routines['normal-basic'];
+      const recommendedIds = new Set();
+      [...routine.morning, ...routine.night].forEach(step => step.productIds.forEach(id => recommendedIds.add(id)));
+
+      const filteredProducts = GlowData.products.filter(p =>
+        recommendedIds.has(p.id) &&
+        p.skinTypes.includes(skinType) &&
+        p.price <= budget
+      ).slice(0, 8);
+
+      const recoGrid = document.getElementById('productReco');
+      if (filteredProducts.length === 0) {
+        recoGrid.innerHTML = '<p style="color:var(--text-muted);font-size:14px;grid-column:1/-1;text-align:center;padding:20px">Coba tingkatkan budget untuk produk yang lebih sesuai.</p>';
+      } else {
+        filteredProducts.forEach(p => {
+          const inWishlist = Wishlist.has(p.id);
+          recoGrid.innerHTML += `
+            <div class="product-card">
+              <div class="product-card-img">${p.emoji}</div>
+              <div class="product-card-body">
+                <div class="product-card-category">${p.category}</div>
+                <div class="product-card-name">${p.name}</div>
+                <div class="product-card-desc">${p.description.substring(0,60)}...</div>
+                <div class="product-card-footer">
+                  <span class="product-price">Rp ${p.price.toLocaleString('id-ID')}</span>
+                  <button class="wishlist-btn ${inWishlist?'active':''}" data-id="${p.id}" title="Tambah ke wishlist">${inWishlist?'💕':'🤍'}</button>
+                </div>
+              </div>
+            </div>`;
+        });
+        document.querySelectorAll('.wishlist-btn').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const id = parseInt(btn.dataset.id);
+            Wishlist.toggle(id);
+            btn.classList.toggle('active');
+            btn.textContent = Wishlist.has(id) ? '💕' : '🤍';
+            Toast.success(Wishlist.has(id) ? 'Ditambahkan ke wishlist! 💕' : 'Dihapus dari wishlist');
+          });
+        });
+      }
+
+      // ── Save result ──
+      document.getElementById('btnSaveResult').addEventListener('click', () => {
+        History.add({ type: 'consultation', skinType, sensitivity, concerns, age, budget, routineKey, emoji: skinResult.emoji });
+        sessionStorage.setItem('gg_routine', routineKey);
+        Toast.success('Hasil konsultasi disimpan! 💾');
+      });
+
+      // Set routine link
+      document.getElementById('btnRoutine').href = `routine.html?key=${routineKey}`;
+      sessionStorage.setItem('gg_routine', routineKey);
+    });
+  </script>
+</body>
+</html>

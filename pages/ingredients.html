@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bahan Aktif Skincare – GlowGuide</title>
+  <meta name="description" content="Pelajari manfaat kandungan aktif skincare seperti Niacinamide, Retinol, Vitamin C, dan lebih banyak lagi di GlowGuide." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/main.css" />
+  <link rel="stylesheet" href="../css/pages.css" />
+  <style>
+    .strength-bar { height: 6px; background: rgba(247,200,211,0.3); border-radius: 99px; overflow: hidden; margin-top: 8px; }
+    .strength-fill { height: 100%; border-radius: 99px; background: linear-gradient(90deg, var(--pink-soft), var(--pink-deep)); transition: width 1.2s ease; }
+    .avoid-chip { display:inline-flex; align-items:center; padding:4px 10px; background:#FEECEC; color:var(--error); border-radius:99px; font-size:11px; font-weight:600; }
+    .detail-overlay { position:fixed; inset:0; background:rgba(44,26,38,0.55); backdrop-filter:blur(6px); z-index:2000; display:flex; align-items:center; justify-content:center; padding:20px; }
+    .detail-card { background:var(--white); border-radius:var(--radius-xl); padding:40px; max-width:540px; width:100%; max-height:90vh; overflow-y:auto; box-shadow:var(--shadow-xl); animation:modalIn .3s cubic-bezier(.34,1.56,.64,1); }
+    @keyframes modalIn { from{opacity:0;transform:scale(.9) translateY(20px)} to{opacity:1;transform:scale(1) translateY(0)} }
+    .combo-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:16px; }
+    .combo-card { padding:14px; border-radius:var(--radius-md); border:1px solid rgba(247,200,211,0.4); }
+    .combo-card.good { background:#E8F5ED; border-color:#A8D8B9; }
+    .combo-card.bad { background:#FEECEC; border-color:#F5A8A8; }
+    .combo-title { font-size:12px; font-weight:700; margin-bottom:6px; }
+    .combo-card.good .combo-title { color:#2E7D4A; }
+    .combo-card.bad .combo-title { color:var(--error); }
+    .combo-item { font-size:12px; color:var(--text-muted); padding:2px 0; }
+  </style>
+</head>
+<body class="ingredients-body">
+
+  <nav class="navbar scrolled" id="navbar">
+    <div class="nav-container">
+      <a href="../index.html" class="logo"><span class="logo-icon">✦</span><span class="logo-text">GlowGuide</span></a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="../index.html" class="nav-link">Home</a></li>
+        <li><a href="catalog.html" class="nav-link">Produk</a></li>
+        <li><a href="ingredients.html" class="nav-link active">Bahan Aktif</a></li>
+        <li><a href="quiz.html" class="nav-link">Skin Quiz</a></li>
+      </ul>
+      <div class="nav-actions" id="navActions">
+        <a href="login.html" class="btn-outline" id="btnLogin">Masuk</a>
+        <a href="register.html" class="btn-primary" id="btnRegister">Daftar</a>
+      </div>
+      <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+    </div>
+  </nav>
+
+  <div class="ingredients-container">
+    <div style="text-align:center;margin-bottom:36px">
+      <div class="section-badge">🔬 Ingredient Education</div>
+      <h1 style="font-family:var(--font-display);font-size:clamp(24px,4vw,36px);font-weight:700;color:var(--text-dark);margin:12px 0 8px">Ensiklopedia Bahan Skincare</h1>
+      <p style="color:var(--text-muted);font-size:15px">Kenali kandungan aktif dalam produk skincaremu dan cara kerjanya</p>
+    </div>
+
+    <!-- Search -->
+    <div class="ingredient-search-wrap">
+      <span class="ingredient-search-icon">🔍</span>
+      <input type="text" class="ingredient-search" id="ingSearch" placeholder="Cari bahan aktif..." />
+    </div>
+
+    <!-- Category Filters -->
+    <div class="category-filters" id="catFilters">
+      <button class="cat-filter active" data-cat="all">✨ Semua</button>
+      <button class="cat-filter" data-cat="hydrating">💧 Hidrasi</button>
+      <button class="cat-filter" data-cat="brightening">☀️ Pencerah</button>
+      <button class="cat-filter" data-cat="acne-fighter">🎯 Anti-Jerawat</button>
+      <button class="cat-filter" data-cat="anti-aging">🕰️ Anti-Aging</button>
+      <button class="cat-filter" data-cat="soothing">🌿 Menenangkan</button>
+      <button class="cat-filter" data-cat="exfoliant">⚗️ Eksfolian</button>
+      <button class="cat-filter" data-cat="barrier-repair">🛡️ Barrier</button>
+      <button class="cat-filter" data-cat="moisturizing">🌰 Pelembap</button>
+    </div>
+
+    <!-- Grid -->
+    <div class="ingredients-grid" id="ingredientsGrid"></div>
+
+    <!-- Compatibility Table -->
+    <div style="background:var(--white);border-radius:var(--radius-xl);padding:32px;margin-top:40px;box-shadow:var(--shadow-sm);border:1px solid rgba(247,200,211,0.3)">
+      <h2 style="font-family:var(--font-display);font-size:22px;font-weight:700;color:var(--text-dark);margin-bottom:6px">🧪 Panduan Kombinasi Bahan</h2>
+      <p style="font-size:14px;color:var(--text-muted);margin-bottom:24px">Beberapa kandungan aktif bekerja sinergis, sementara yang lain sebaiknya tidak digabungkan.</p>
+      <div style="overflow-x:auto">
+        <table style="width:100%;border-collapse:collapse;font-size:13px">
+          <thead>
+            <tr style="background:var(--cream)">
+              <th style="padding:12px 16px;text-align:left;font-weight:700;color:var(--text-dark);border-radius:var(--radius-sm) 0 0 0">Bahan Utama</th>
+              <th style="padding:12px 16px;text-align:left;font-weight:700;color:var(--success)">✅ Cocok Dikombinasi</th>
+              <th style="padding:12px 16px;text-align:left;font-weight:700;color:var(--error)">🚫 Hindari Dikombinasi</th>
+            </tr>
+          </thead>
+          <tbody id="compatTable"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Detail Modal -->
+  <div class="detail-overlay hidden" id="ingModal">
+    <div class="detail-card">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px">
+        <div style="display:flex;align-items:center;gap:14px">
+          <div style="font-size:52px" id="modalIng_emoji"></div>
+          <div>
+            <div style="font-family:var(--font-display);font-size:22px;font-weight:700;color:var(--text-dark)" id="modalIng_name"></div>
+            <div style="font-size:12px;font-weight:700;color:var(--pink-deep);text-transform:uppercase;letter-spacing:.5px;margin-top:2px" id="modalIng_cat"></div>
+          </div>
+        </div>
+        <button onclick="closeIngModal()" style="width:34px;height:34px;border-radius:50%;background:var(--cream);border:none;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0">✕</button>
+      </div>
+      <div style="font-size:14px;color:var(--text-muted);line-height:1.8;margin-bottom:20px" id="modalIng_benefit"></div>
+
+      <div style="margin-bottom:16px">
+        <div style="font-size:13px;font-weight:700;color:var(--text-dark);margin-bottom:6px">💪 Tingkat Efektivitas</div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <div style="flex:1"><div class="strength-bar"><div class="strength-fill" id="modalIng_strength" style="width:0%"></div></div></div>
+          <span style="font-size:13px;font-weight:700;color:var(--rose)" id="modalIng_strengthPct"></span>
+        </div>
+      </div>
+
+      <div style="margin-bottom:16px">
+        <div style="font-size:13px;font-weight:700;color:var(--text-dark);margin-bottom:8px">✅ Cocok untuk Jenis Kulit:</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px" id="modalIng_skinTypes"></div>
+      </div>
+
+      <div>
+        <div style="font-size:13px;font-weight:700;color:var(--text-dark);margin-bottom:8px">⚠️ Perhatian:</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px" id="modalIng_avoid"></div>
+      </div>
+
+      <a href="catalog.html" class="btn btn-pink full-width mt-24" style="display:flex;justify-content:center">🛍️ Lihat Produk dengan Kandungan Ini</a>
+    </div>
+  </div>
+
+  <script src="../js/main.js"></script>
+  <script src="../js/data.js"></script>
+  <script>
+    const compatData = [
+      { main: 'Niacinamide',     good: ['Retinol', 'AHA/BHA', 'Vitamin C', 'Peptide', 'HA'],         bad: ['Vitamin C tinggi (tunggu 30 min)'] },
+      { main: 'Retinol',         good: ['Niacinamide', 'Peptide', 'Hyaluronic Acid', 'Ceramide'],     bad: ['AHA/BHA (malam sama)', 'Vitamin C', 'Benzoyl Peroxide'] },
+      { main: 'Vitamin C',       good: ['Vitamin E', 'Ferulic Acid', 'Hyaluronic Acid', 'SPF'],       bad: ['Retinol', 'AHA/BHA', 'Niacinamide konsentrasi tinggi'] },
+      { main: 'AHA/BHA',         good: ['Niacinamide (after)', 'Hyaluronic Acid', 'Ceramide'],        bad: ['Retinol (malam sama)', 'Vitamin C', 'Benzoyl Peroxide'] },
+      { main: 'Hyaluronic Acid', good: ['Semua bahan aktif', 'Retinol', 'Vitamin C', 'Niacinamide'], bad: ['Tidak ada pantangan khusus'] },
+      { main: 'Centella Asiatica',good: ['Ceramide', 'Peptide', 'Niacinamide', 'HA'],                bad: ['Hindari kombinasi dengan banyak bahan aktif sekaligus'] },
+    ];
+
+    let activeCat = 'all';
+    let searchQ = '';
+
+    function getFiltered() {
+      return GlowData.ingredients.filter(ing => {
+        if (activeCat !== 'all' && ing.category !== activeCat) return false;
+        if (searchQ && !ing.name.toLowerCase().includes(searchQ) && !ing.benefit.toLowerCase().includes(searchQ)) return false;
+        return true;
+      });
+    }
+
+    function renderIngredients() {
+      const filtered = getFiltered();
+      const grid = document.getElementById('ingredientsGrid');
+
+      if (filtered.length === 0) {
+        grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:60px 0"><div style="font-size:48px;margin-bottom:12px">🔍</div><p style="color:var(--text-muted)">Tidak ada bahan yang sesuai pencarian.</p></div>`;
+        return;
+      }
+
+      grid.innerHTML = filtered.map(ing => `
+        <div class="ingredient-card" onclick="openIngModal('${ing.id}')" id="${ing.id}">
+          <div class="ingredient-card-header">
+            <div class="ingredient-icon">${ing.emoji}</div>
+            <div>
+              <div class="ingredient-name">${ing.name}</div>
+              <div class="ingredient-category">${ing.category.replace(/-/g,' ')}</div>
+            </div>
+          </div>
+          <div class="ingredient-benefit">${ing.benefit.substring(0,120)}...</div>
+          <div style="margin-bottom:10px">
+            <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text-muted);margin-bottom:4px">
+              <span>Efektivitas</span><span style="font-weight:700;color:var(--rose)">${ing.strength}%</span>
+            </div>
+            <div class="strength-bar"><div class="strength-fill" style="width:${ing.strength}%"></div></div>
+          </div>
+          <div class="ingredient-skin-types">
+            ${ing.skinTypes.map(s => `<span class="skin-type-pill">${s}</span>`).join('')}
+          </div>
+        </div>`).join('');
+    }
+
+    // Compat table
+    const tbody = document.getElementById('compatTable');
+    compatData.forEach((row, i) => {
+      tbody.innerHTML += `
+        <tr style="border-bottom:1px solid rgba(247,200,211,.2);${i%2===0?'background:var(--cream)':''}">
+          <td style="padding:12px 16px;font-weight:700;color:var(--text-dark)">${row.main}</td>
+          <td style="padding:12px 16px;color:#2E7D4A">${row.good.join(', ')}</td>
+          <td style="padding:12px 16px;color:var(--error)">${row.bad.join(', ')}</td>
+        </tr>`;
+    });
+
+    // Category filter
+    document.querySelectorAll('.cat-filter').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.cat-filter').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        activeCat = btn.dataset.cat;
+        renderIngredients();
+      });
+    });
+
+    // Search
+    document.getElementById('ingSearch').addEventListener('input', e => {
+      searchQ = e.target.value.toLowerCase().trim();
+      renderIngredients();
+    });
+
+    // Modal
+    window.openIngModal = function(id) {
+      const ing = GlowData.ingredients.find(i => i.id === id);
+      if (!ing) return;
+      document.getElementById('modalIng_emoji').textContent = ing.emoji;
+      document.getElementById('modalIng_name').textContent = ing.name;
+      document.getElementById('modalIng_cat').textContent = ing.category.replace(/-/g,' ');
+      document.getElementById('modalIng_benefit').textContent = ing.benefit;
+      document.getElementById('modalIng_strengthPct').textContent = ing.strength + '%';
+      setTimeout(() => { document.getElementById('modalIng_strength').style.width = ing.strength + '%'; }, 100);
+      document.getElementById('modalIng_skinTypes').innerHTML = ing.skinTypes.map(s => `<span class="badge badge-pink">${s}</span>`).join('');
+      document.getElementById('modalIng_avoid').innerHTML = ing.avoid.length > 0
+        ? ing.avoid.map(a => `<span class="avoid-chip">⚠️ ${a}</span>`).join('')
+        : '<span style="font-size:13px;color:var(--text-muted)">Tidak ada pantangan khusus ✅</span>';
+      document.getElementById('ingModal').classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+    };
+
+    window.closeIngModal = function() {
+      document.getElementById('ingModal').classList.add('hidden');
+      document.getElementById('modalIng_strength').style.width = '0%';
+      document.body.style.overflow = '';
+    };
+
+    document.getElementById('ingModal').addEventListener('click', e => {
+      if (e.target === document.getElementById('ingModal')) closeIngModal();
+    });
+
+    // Hash link support
+    const hash = window.location.hash?.replace('#','');
+    if (hash) setTimeout(() => openIngModal(hash), 300);
+
+    renderIngredients();
+  </script>
+</body>
+</html>

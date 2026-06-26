@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Panel – GlowGuide</title>
+  <meta name="description" content="Admin dashboard GlowGuide untuk mengelola produk, aturan sistem pakar, dan data pengguna." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/main.css" />
+  <link rel="stylesheet" href="../css/pages.css" />
+  <style>
+    .chart-bar-wrap { margin-bottom: 14px; }
+    .chart-bar-label { display:flex; justify-content:space-between; font-size:13px; color:var(--text-mid); margin-bottom:5px; font-weight:500; }
+    .chart-bar { height:10px; background:rgba(247,200,211,.3); border-radius:99px; overflow:hidden; }
+    .chart-bar-fill { height:100%; border-radius:99px; background:linear-gradient(90deg,var(--pink-soft),var(--pink-deep)); transition:width 1s ease; }
+    .rule-card { background:var(--white); border-radius:var(--radius-lg); padding:20px; border:1px solid rgba(247,200,211,.3); margin-bottom:12px; box-shadow:var(--shadow-sm); }
+    .rule-condition { display:inline-flex; align-items:center; gap:6px; padding:5px 12px; background:var(--blush); border-radius:99px; font-size:12px; font-weight:700; color:var(--rose); margin:3px; }
+    .rule-output { display:inline-flex; align-items:center; gap:6px; padding:5px 12px; background:#E8F5ED; border-radius:99px; font-size:12px; font-weight:700; color:#2E7D4A; margin:3px; }
+    .mini-chart { display:grid; grid-template-columns:repeat(7,1fr); gap:4px; align-items:end; height:60px; }
+    .mini-bar { background:linear-gradient(180deg,var(--pink-deep),var(--pink-soft)); border-radius:3px 3px 0 0; transition:height .5s ease; }
+    .user-row { display:flex; align-items:center; gap:12px; padding:12px; border-radius:var(--radius-md); transition:var(--transition); }
+    .user-row:hover { background:var(--cream); }
+    .user-avatar { width:38px; height:38px; border-radius:50%; background:linear-gradient(135deg,var(--pink-soft),var(--pink-deep)); display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0; }
+    .add-product-form { background:var(--cream); border-radius:var(--radius-lg); padding:24px; margin-bottom:24px; }
+    .form-row { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  </style>
+</head>
+<body class="admin-body">
+
+  <!-- Admin Sidebar -->
+  <aside class="admin-sidebar">
+    <div class="admin-logo">
+      <div class="logo">
+        <span class="logo-icon">✦</span>
+        <span class="logo-text">GlowGuide</span>
+      </div>
+      <div style="font-size:11px;color:rgba(255,255,255,.4);margin-top:4px">Admin Panel</div>
+    </div>
+    <div class="admin-nav-section"><span class="admin-nav-label">Utama</span></div>
+    <button class="admin-nav-item active" data-page="dashboard" id="nav-dashboard"><span class="admin-nav-item-icon">📊</span>Dashboard</button>
+    <button class="admin-nav-item" data-page="products" id="nav-products"><span class="admin-nav-item-icon">🛍️</span>Kelola Produk</button>
+    <button class="admin-nav-item" data-page="rules" id="nav-rules"><span class="admin-nav-item-icon">🧠</span>Knowledge Base</button>
+    <div class="admin-nav-section"><span class="admin-nav-label">Pengguna</span></div>
+    <button class="admin-nav-item" data-page="users" id="nav-users"><span class="admin-nav-item-icon">👥</span>Data Pengguna</button>
+    <button class="admin-nav-item" data-page="stats" id="nav-stats"><span class="admin-nav-item-icon">📈</span>Statistik</button>
+    <div class="admin-nav-section" style="margin-top:auto"><span class="admin-nav-label">Lainnya</span></div>
+    <button class="admin-nav-item" onclick="window.location.href='../index.html'"><span class="admin-nav-item-icon">🏠</span>Ke Website</button>
+    <button class="admin-nav-item" onclick="Auth.logout()"><span class="admin-nav-item-icon">🚪</span>Logout</button>
+  </aside>
+
+  <!-- Admin Main -->
+  <main class="admin-main">
+    <!-- Top Bar -->
+    <div class="admin-topbar">
+      <h1 id="pageTitle">Dashboard</h1>
+      <div class="admin-user-badge" id="adminUserBadge">
+        <div class="admin-user-avatar">👑</div>
+        <span class="admin-user-name" id="adminName">Admin</span>
+      </div>
+    </div>
+
+    <!-- ── DASHBOARD PAGE ── -->
+    <div class="admin-page active" id="page-dashboard">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-card-icon pink">🛍️</div>
+          <div><div class="stat-card-value" id="statProducts">30</div><div class="stat-card-label">Total Produk</div></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-icon cream">👥</div>
+          <div><div class="stat-card-value" id="statUsers">0</div><div class="stat-card-label">Pengguna Terdaftar</div></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-icon green">💬</div>
+          <div><div class="stat-card-value" id="statConsults">0</div><div class="stat-card-label">Total Konsultasi</div></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-icon blue">🧠</div>
+          <div><div class="stat-card-value">10</div><div class="stat-card-label">Aturan Knowledge</div></div>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;flex-wrap:wrap">
+        <!-- Popular Categories -->
+        <div class="admin-panel">
+          <div class="admin-panel-header">
+            <span class="admin-panel-title">📊 Distribusi Produk per Kategori</span>
+          </div>
+          <div id="catChart"></div>
+        </div>
+
+        <!-- Activity Mini Chart -->
+        <div class="admin-panel">
+          <div class="admin-panel-header">
+            <span class="admin-panel-title">📈 Aktivitas 7 Hari Terakhir</span>
+          </div>
+          <div class="mini-chart" id="activityChart"></div>
+          <div style="display:flex;justify-content:space-between;margin-top:8px;font-size:11px;color:var(--text-muted)">
+            <span>Sen</span><span>Sel</span><span>Rab</span><span>Kam</span><span>Jum</span><span>Sab</span><span>Min</span>
+          </div>
+        </div>
+
+        <!-- Skin Type Distribution -->
+        <div class="admin-panel" style="grid-column:1/-1">
+          <div class="admin-panel-header">
+            <span class="admin-panel-title">🌸 Distribusi Jenis Kulit Pengguna</span>
+          </div>
+          <div id="skinChart" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── PRODUCTS PAGE ── -->
+    <div class="admin-page" id="page-products">
+      <!-- Add Form -->
+      <div class="admin-panel" style="margin-bottom:20px">
+        <div class="admin-panel-header">
+          <span class="admin-panel-title">➕ Tambah Produk Baru</span>
+          <button class="btn btn-ghost" style="font-size:13px;padding:8px 16px" id="toggleAddForm">Tampilkan Form</button>
+        </div>
+        <div id="addProductForm" class="hidden">
+          <div class="add-product-form">
+            <div class="form-row" style="margin-bottom:16px">
+              <div class="form-group mb-0">
+                <label class="form-label">Nama Produk</label>
+                <input type="text" class="form-input" id="newProdName" placeholder="Nama produk" />
+              </div>
+              <div class="form-group mb-0">
+                <label class="form-label">Brand</label>
+                <input type="text" class="form-input" id="newProdBrand" placeholder="Nama brand" />
+              </div>
+            </div>
+            <div class="form-row" style="margin-bottom:16px">
+              <div class="form-group mb-0">
+                <label class="form-label">Kategori</label>
+                <select class="form-select" id="newProdCat">
+                  <option value="facial-wash">Facial Wash</option>
+                  <option value="toner">Toner</option>
+                  <option value="serum">Serum</option>
+                  <option value="moisturizer">Moisturizer</option>
+                  <option value="sunscreen">Sunscreen</option>
+                  <option value="mask">Mask</option>
+                </select>
+              </div>
+              <div class="form-group mb-0">
+                <label class="form-label">Harga (Rp)</label>
+                <input type="number" class="form-input" id="newProdPrice" placeholder="150000" />
+              </div>
+            </div>
+            <div class="form-group" style="margin-bottom:16px">
+              <label class="form-label">Deskripsi</label>
+              <textarea class="form-input" id="newProdDesc" rows="2" placeholder="Deskripsi produk..."></textarea>
+            </div>
+            <div class="form-row">
+              <div class="form-group mb-0">
+                <label class="form-label">Emoji Produk</label>
+                <input type="text" class="form-input" id="newProdEmoji" placeholder="🧴" maxlength="2" />
+              </div>
+              <div class="form-group mb-0">
+                <label class="form-label">Cocok untuk (pisah koma)</label>
+                <input type="text" class="form-input" id="newProdSkin" placeholder="berminyak, kombinasi" />
+              </div>
+            </div>
+            <div style="margin-top:16px;display:flex;gap:10px">
+              <button class="btn btn-pink" id="btnSaveProduct">💾 Simpan Produk</button>
+              <button class="btn btn-ghost" id="btnCancelAdd">Batal</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Products Table -->
+      <div class="admin-panel">
+        <div class="admin-panel-header">
+          <span class="admin-panel-title">📦 Semua Produk (<span id="prodTotal">30</span>)</span>
+          <input type="text" class="form-input" id="adminProdSearch" placeholder="🔍 Cari produk..." style="max-width:240px;padding:8px 14px;font-size:13px" />
+        </div>
+        <div style="overflow-x:auto">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Produk</th>
+                <th>Brand</th>
+                <th>Kategori</th>
+                <th>Harga</th>
+                <th>Jenis Kulit</th>
+                <th>Rating</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="productsTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── KNOWLEDGE BASE PAGE ── -->
+    <div class="admin-page" id="page-rules">
+      <div class="admin-panel" style="margin-bottom:20px">
+        <div class="admin-panel-header">
+          <span class="admin-panel-title">🧠 Aturan Knowledge Base (IF-THEN)</span>
+          <span style="font-size:13px;color:var(--text-muted)">10 aturan aktif</span>
+        </div>
+        <p style="font-size:13px;color:var(--text-muted);margin-bottom:20px">Sistem pakar menggunakan aturan logika IF-THEN untuk mencocokkan kondisi kulit pengguna dengan rekomendasi produk dan rutinitas yang paling sesuai.</p>
+        <div id="rulesContainer"></div>
+      </div>
+    </div>
+
+    <!-- ── USERS PAGE ── -->
+    <div class="admin-page" id="page-users">
+      <div class="admin-panel">
+        <div class="admin-panel-header">
+          <span class="admin-panel-title">👥 Data Pengguna</span>
+          <span style="font-size:13px;color:var(--text-muted)" id="usersCountLabel">0 pengguna</span>
+        </div>
+        <div id="usersContainer"></div>
+      </div>
+    </div>
+
+    <!-- ── STATS PAGE ── -->
+    <div class="admin-page" id="page-stats">
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px">
+        <div class="admin-panel">
+          <div class="admin-panel-header"><span class="admin-panel-title">📊 Statistik Wishlist</span></div>
+          <div id="wishlistStats"></div>
+        </div>
+        <div class="admin-panel">
+          <div class="admin-panel-header"><span class="admin-panel-title">💬 Statistik Konsultasi</span></div>
+          <div id="consultStats"></div>
+        </div>
+        <div class="admin-panel" style="grid-column:1/-1">
+          <div class="admin-panel-header"><span class="admin-panel-title">🏆 Produk Paling Banyak di Wishlist</span></div>
+          <div id="topWishlist"></div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="../js/main.js"></script>
+  <script src="../js/data.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Auth guard
+      if (!Auth.isAdmin()) {
+        Toast.error('Akses ditolak. Login sebagai admin.');
+        setTimeout(() => window.location.href = 'login.html', 1000);
+        return;
+      }
+
+      const user = Auth.getUser();
+      document.getElementById('adminName').textContent = user.name;
+
+      // Page navigation
+      document.querySelectorAll('.admin-nav-item[data-page]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.admin-nav-item').forEach(b => b.classList.remove('active'));
+          document.querySelectorAll('.admin-page').forEach(p => p.classList.remove('active'));
+          btn.classList.add('active');
+          document.getElementById('page-' + btn.dataset.page).classList.add('active');
+          document.getElementById('pageTitle').textContent = btn.textContent.trim();
+        });
+      });
+
+      // ── DASHBOARD ──
+      const users = JSON.parse(localStorage.getItem('gg_users') || '[]');
+      const history = History.get();
+      const consults = history.filter(h => h.type === 'consultation');
+      document.getElementById('statUsers').textContent = users.length;
+      document.getElementById('statConsults').textContent = consults.length;
+
+      // Category chart
+      const catCounts = {};
+      GlowData.products.forEach(p => { catCounts[p.category] = (catCounts[p.category]||0)+1; });
+      const catEmojis = { 'facial-wash':'🧼','toner':'💧','serum':'🔬','moisturizer':'🏺','sunscreen':'☀️','mask':'🌋' };
+      const catEl = document.getElementById('catChart');
+      Object.entries(catCounts).forEach(([cat,count]) => {
+        const pct = Math.round((count/GlowData.products.length)*100);
+        catEl.innerHTML += `<div class="chart-bar-wrap"><div class="chart-bar-label"><span>${catEmojis[cat]||''} ${cat}</span><span>${count} produk (${pct}%)</span></div><div class="chart-bar"><div class="chart-bar-fill" style="width:${pct}%"></div></div></div>`;
+      });
+
+      // Activity mini-chart (random demo data)
+      const actEl = document.getElementById('activityChart');
+      const actData = [3,7,5,12,8,15,10];
+      const maxAct = Math.max(...actData);
+      actData.forEach(v => {
+        const pct = Math.round((v/maxAct)*100);
+        actEl.innerHTML += `<div class="mini-bar" style="height:${pct}%" title="${v} aktivitas"></div>`;
+      });
+
+      // Skin type chart
+      const skinCounts = { berminyak:0, kering:0, kombinasi:0, sensitif:0, normal:0 };
+      users.forEach(u => { if (u.skinType && skinCounts[u.skinType] !== undefined) skinCounts[u.skinType]++; });
+      history.forEach(h => { if (h.skinType && skinCounts[h.skinType] !== undefined) skinCounts[h.skinType]++; });
+      const skinEl = document.getElementById('skinChart');
+      const skinEmojis = { berminyak:'💧', kering:'🌵', kombinasi:'⚖️', sensitif:'🌸', normal:'✨' };
+      const totalSkin = Object.values(skinCounts).reduce((a,b)=>a+b,0)||1;
+      Object.entries(skinCounts).forEach(([type,count]) => {
+        const pct = Math.round((count/totalSkin)*100);
+        skinEl.innerHTML += `<div style="background:var(--white);border:1px solid rgba(247,200,211,.3);border-radius:var(--radius-lg);padding:16px;text-align:center"><div style="font-size:28px;margin-bottom:8px">${skinEmojis[type]}</div><div style="font-weight:700;font-size:18px;color:var(--rose)">${count}</div><div style="font-size:13px;color:var(--text-muted);margin-bottom:8px">${type}</div><div class="chart-bar"><div class="chart-bar-fill" style="width:${pct}%"></div></div><div style="font-size:11px;color:var(--text-muted);margin-top:4px">${pct}%</div></div>`;
+      });
+
+      // ── PRODUCTS TABLE ──
+      function renderProductsTable(filter = '') {
+        const products = GlowData.products.filter(p =>
+          !filter || p.name.toLowerCase().includes(filter) || p.brand.toLowerCase().includes(filter)
+        );
+        document.getElementById('prodTotal').textContent = products.length;
+        const tbody = document.getElementById('productsTableBody');
+        tbody.innerHTML = products.map(p => `
+          <tr>
+            <td><div style="display:flex;align-items:center;gap:10px"><div class="table-product-img">${p.emoji}</div><span style="font-weight:600">${p.name}</span></div></td>
+            <td>${p.brand}</td>
+            <td><span class="badge badge-pink">${p.category}</span></td>
+            <td style="font-weight:700;color:var(--rose)">Rp ${p.price.toLocaleString('id-ID')}</td>
+            <td>${p.skinTypes.join(', ')}</td>
+            <td>⭐ ${p.rating}</td>
+            <td>
+              <div class="table-actions">
+                <button class="table-btn table-btn-edit" onclick="Toast.info('Edit fitur tersedia di versi pro')">✏️ Edit</button>
+                <button class="table-btn table-btn-delete" onclick="if(confirm('Hapus produk ini?')) Toast.error('Demo: produk tidak benar-benar dihapus')">🗑️</button>
+              </div>
+            </td>
+          </tr>`).join('');
+      }
+      renderProductsTable();
+
+      document.getElementById('adminProdSearch').addEventListener('input', e => renderProductsTable(e.target.value.toLowerCase()));
+
+      // Add product form toggle
+      document.getElementById('toggleAddForm').addEventListener('click', () => {
+        const form = document.getElementById('addProductForm');
+        const hidden = form.classList.contains('hidden');
+        form.classList.toggle('hidden', !hidden);
+        document.getElementById('toggleAddForm').textContent = hidden ? 'Sembunyikan' : 'Tampilkan Form';
+      });
+      document.getElementById('btnCancelAdd').addEventListener('click', () => {
+        document.getElementById('addProductForm').classList.add('hidden');
+        document.getElementById('toggleAddForm').textContent = 'Tampilkan Form';
+      });
+      document.getElementById('btnSaveProduct').addEventListener('click', () => {
+        const name = document.getElementById('newProdName').value.trim();
+        if (!name) { Toast.error('Nama produk wajib diisi'); return; }
+        Toast.success('Produk "' + name + '" berhasil ditambahkan! ✅');
+        document.getElementById('addProductForm').classList.add('hidden');
+        document.getElementById('toggleAddForm').textContent = 'Tampilkan Form';
+        ['newProdName','newProdBrand','newProdPrice','newProdDesc','newProdEmoji','newProdSkin'].forEach(id => document.getElementById(id).value = '');
+      });
+
+      // ── RULES ──
+      const rulesEl = document.getElementById('rulesContainer');
+      GlowData.rules.forEach((rule, i) => {
+        const conds = [
+          `Jenis Kulit: ${rule.conditions.skinType}`,
+          ...(rule.conditions.concerns||[]).map(c => `Keluhan: ${c}`),
+          ...(rule.conditions.sensitivity ? [`Sensitif: ${rule.conditions.sensitivity.join('/')}`] : [])
+        ];
+        const outs = [
+          `Rutinitas: ${rule.output.routine}`,
+          ...(rule.output.ingredients||[]).slice(0,3).map(i => `Bahan: ${i}`)
+        ];
+        rulesEl.innerHTML += `
+          <div class="rule-card">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+              <div style="font-weight:700;font-size:14px;color:var(--text-dark)">Aturan #${rule.id}</div>
+              <span class="badge badge-green">Aktif</span>
+            </div>
+            <div style="margin-bottom:10px">
+              <div style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">IF (Kondisi):</div>
+              <div>${conds.map(c => `<span class="rule-condition">🔵 ${c}</span>`).join('')}</div>
+            </div>
+            <div>
+              <div style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">THEN (Rekomendasi):</div>
+              <div>${outs.map(o => `<span class="rule-output">✅ ${o}</span>`).join('')}</div>
+            </div>
+            <div style="margin-top:12px;font-size:12px;color:var(--text-muted);font-style:italic">"${rule.output.advice}"</div>
+          </div>`;
+      });
+
+      // ── USERS ──
+      const usersEl = document.getElementById('usersContainer');
+      const skinEmojisMap = { berminyak:'💧',kering:'🌵',kombinasi:'⚖️',sensitif:'🌸',normal:'✨' };
+      document.getElementById('usersCountLabel').textContent = users.length + ' pengguna';
+      if (users.length === 0) {
+        usersEl.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-muted)">Belum ada pengguna terdaftar. Coba daftar akun baru dulu!</div>';
+      } else {
+        usersEl.innerHTML = users.map(u => `
+          <div class="user-row">
+            <div class="user-avatar">${u.avatar||'🌸'}</div>
+            <div style="flex:1">
+              <div style="font-weight:700;font-size:14px;color:var(--text-dark)">${u.name}</div>
+              <div style="font-size:12px;color:var(--text-muted)">${u.email} · ${u.role}</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px">
+              ${u.skinType ? `<span class="badge badge-pink">${skinEmojisMap[u.skinType]||'✨'} ${u.skinType}</span>` : '<span style="font-size:12px;color:var(--text-light)">Belum quiz</span>'}
+              <span style="font-size:11px;color:var(--text-muted)">${u.joinDate ? new Date(u.joinDate).toLocaleDateString('id-ID') : '-'}</span>
+            </div>
+          </div>`).join('<hr style="border:none;border-top:1px solid rgba(247,200,211,.2);margin:0">');
+      }
+
+      // ── STATS ──
+      const wishlistIds = Wishlist.get();
+      const wishlistStatsEl = document.getElementById('wishlistStats');
+      wishlistStatsEl.innerHTML = `
+        <div style="text-align:center;padding:20px">
+          <div style="font-family:var(--font-display);font-size:40px;font-weight:700;color:var(--rose)">${wishlistIds.length}</div>
+          <div style="font-size:14px;color:var(--text-muted);margin-bottom:16px">Produk di Wishlist</div>
+        </div>`;
+
+      const consultStatsEl = document.getElementById('consultStats');
+      const quizCount = history.filter(h=>h.type==='quiz').length;
+      consultStatsEl.innerHTML = `
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:4px">
+          <div style="text-align:center;background:var(--cream);border-radius:var(--radius-md);padding:16px">
+            <div style="font-family:var(--font-display);font-size:28px;font-weight:700;color:var(--rose)">${consults.length}</div>
+            <div style="font-size:12px;color:var(--text-muted)">Konsultasi</div>
+          </div>
+          <div style="text-align:center;background:var(--cream);border-radius:var(--radius-md);padding:16px">
+            <div style="font-family:var(--font-display);font-size:28px;font-weight:700;color:var(--pink-deep)">${quizCount}</div>
+            <div style="font-size:12px;color:var(--text-muted)">Skin Quiz</div>
+          </div>
+        </div>`;
+
+      // Top wishlist products
+      const topEl = document.getElementById('topWishlist');
+      if (wishlistIds.length === 0) {
+        topEl.innerHTML = '<p style="text-align:center;color:var(--text-muted);padding:20px">Belum ada produk di wishlist</p>';
+      } else {
+        const topProducts = GlowData.products.filter(p => wishlistIds.includes(p.id)).slice(0, 5);
+        topEl.innerHTML = topProducts.map((p, i) => `
+          <div style="display:flex;align-items:center;gap:14px;padding:12px;border-radius:var(--radius-md);${i%2===0?'background:var(--cream)':''}">
+            <div style="font-family:var(--font-display);font-size:20px;font-weight:700;color:var(--pink-mid);width:24px">0${i+1}</div>
+            <div style="font-size:24px">${p.emoji}</div>
+            <div style="flex:1"><div style="font-weight:700;font-size:14px">${p.name}</div><div style="font-size:12px;color:var(--text-muted)">${p.brand}</div></div>
+            <div style="font-weight:700;color:var(--rose)">Rp ${p.price.toLocaleString('id-ID')}</div>
+          </div>`).join('');
+      }
+    });
+  </script>
+</body>
+</html>
